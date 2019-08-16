@@ -1,7 +1,7 @@
-package com.hetengjiao.demo.controller;
+package com.chinamobile.demo.controller;
 
-import com.hetengjiao.demo.entities.BeanUser;
-import com.hetengjiao.demo.mapper.BeanUserMapper;
+import com.chinamobile.demo.entities.BeanUser;
+import com.chinamobile.demo.mapper.BeanUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +21,7 @@ public class ControllerBean {
 	@GetMapping("/get/{id}/user/{user_name}")
 
 	public List<BeanUser> getBeanUser(@PathVariable("id") Integer id,
-	                            @PathVariable("user_name") String user_name){
+	                                  @PathVariable("user_name") String user_name){
 		Map map = new HashMap();
 		map.put("id", id);
 		map.put("userName", user_name);

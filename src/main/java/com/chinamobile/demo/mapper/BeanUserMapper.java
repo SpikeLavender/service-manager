@@ -1,11 +1,10 @@
-package com.hetengjiao.demo.mapper;
+package com.chinamobile.demo.mapper;
 
 //指定这是一个操作数据库的mapper
 
-import com.hetengjiao.demo.entities.BeanUser;
+import com.chinamobile.demo.entities.BeanUser;
 import org.apache.ibatis.annotations.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

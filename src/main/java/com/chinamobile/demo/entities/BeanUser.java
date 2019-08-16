@@ -1,4 +1,4 @@
-package com.hetengjiao.demo.entities;
+package com.chinamobile.demo.entities;
 
 import java.util.Date;
 

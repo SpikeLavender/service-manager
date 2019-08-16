@@ -1,4 +1,4 @@
-package com.hetengjiao.demo;
+package com.chinamobile.demo;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

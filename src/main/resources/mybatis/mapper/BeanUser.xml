@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hetengjiao.demo.mapper.BeanUserMapper">
+<mapper namespace="com.chinamobile.demo.mapper.BeanUserMapper">
 
-    <insert id="insertBean" parameterType="com.hetengjiao.demo.entities.BeanUser" keyProperty="id" useGeneratedKeys="true">
+    <insert id="insertBean" parameterType="com.chinamobile.demo.entities.BeanUser" keyProperty="id" useGeneratedKeys="true">
         insert into table_one(user_name, pass_word, param_name, modify_time)
         values(#{userName}, #{passWord}, #{paramName}, #{modifyTime})
     </insert>
@@ -16,7 +16,7 @@
             (#{item.userName}, #{item.passWord}, #{item.paramName}, #{item.modifyTime})
         </foreach>
     </insert>
-    <select id="selectId" resultType="com.hetengjiao.demo.entities.BeanUser" parameterType="hashmap">
+    <select id="selectId" resultType="com.chinamobile.demo.entities.BeanUser" parameterType="hashmap">
         select * from table_one
         <where>
             id=#{id}
@@ -26,7 +26,7 @@
 
         </where>;
     </select>
-    <select id="selectByEntity" resultType="com.hetengjiao.demo.entities.BeanUser">
+    <select id="selectByEntity" resultType="com.chinamobile.demo.entities.BeanUser">
         select * from table_one
         <where>
             id=#{id}

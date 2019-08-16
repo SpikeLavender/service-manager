@@ -1,4 +1,4 @@
-package com.hetengjiao.demo.config;
+package com.chinamobile.demo.config;
 
 import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * MyBatis的注解 版本相关配置类
- * @Auther: 梦学谷
+ * @Auther: hetengjiao
  */
 @Configuration
 public class MyBatisConfig {
