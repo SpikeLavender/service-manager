@@ -13,8 +13,18 @@ public class UserInfo {
 	private long id;
 	private String userName;
 	private String password;
+	private String tokenId;
 	private Date createTime;
 	private Date updateTime;
+	private Date expireTime;
+
+	public UserInfo() {
+
+	}
+
+	public UserInfo(String tokenId) {
+		this.tokenId = tokenId;
+	}
 
 	public long getId() {
 		return id;
@@ -40,6 +50,14 @@ public class UserInfo {
 		this.password = password;
 	}
 
+	public String getTokenId() {
+		return tokenId;
+	}
+
+	public void setTokenId(String tokenId) {
+		this.tokenId = tokenId;
+	}
+
 	public Date getCreateTime() {
 		return createTime;
 	}
@@ -54,5 +72,13 @@ public class UserInfo {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public Date getExpireTime() {
+		return expireTime;
+	}
+
+	public void setExpireTime(Date expireTime) {
+		this.expireTime = expireTime;
 	}
 }

@@ -5,11 +5,15 @@ import com.chinamobile.demo.entities.IdentityUser;
 import com.chinamobile.demo.entities.ResponseEntity;
 import com.chinamobile.demo.entities.Token;
 import com.chinamobile.demo.entities.UserInfo;
+import com.chinamobile.demo.mapper.UserInfoMapper;
 import com.chinamobile.demo.utils.CommonUtil;
 import com.chinamobile.demo.utils.TokenUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -27,6 +31,9 @@ public class TokenManagerService {
 	@Value("${token.key}")
 	private String encryptKey;
 
+	@Autowired
+	private UserInfoMapper userInfoMapper;
+
 	public ResponseEntity login(UserInfo userInfo) throws Exception {
 		//ResponseEntity responseEntity = new ResponseEntity();
 		//校验账号密码
@@ -35,8 +42,10 @@ public class TokenManagerService {
 			//生成token
 			IdentityUser user = new IdentityUser(userInfo.getUserName());
 			Token token = generateToken(user);
-//			responseEntity = ResponseEntity.ok();
-//			responseEntity.setData(CommonUtil.objectToJson(token));
+			//更新数据库中的tokenId
+			userInfo.setTokenId(token.getTokenId());
+			userInfo.setExpireTime(new Date(token.getExpireTime()));
+			userInfoMapper.update(userInfo);
 			return new ResponseEntity("200", "get token success", CommonUtil.objectToJson(token));
 		} else {
 			return new ResponseEntity("40001", "user name or password error");
@@ -51,7 +60,7 @@ public class TokenManagerService {
 
 		Token token = new Token();
 		token.setUserName(user.getUserName());
-		token.setId(tokenId);
+		token.setTokenId(tokenId);
 		token.setExpireTime(expireTime);
 
 		return token;
@@ -59,7 +68,20 @@ public class TokenManagerService {
 
 	public boolean authorize(UserInfo user) {
 		//check if username and password is matched or if token has expired
-		//TODO
-		return true;
+		List<UserInfo> userInfos = userInfoMapper.getUserInfo(user);
+		if (!userInfos.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean authorizeToken(String tokenId) {
+		//check if token has expired
+		//TODO: sql judge expired through expiredTime
+		List<UserInfo> userInfos = userInfoMapper.getUserInfo(new UserInfo(tokenId));
+		if (!userInfos.isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 }

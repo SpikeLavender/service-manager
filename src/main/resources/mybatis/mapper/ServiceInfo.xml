@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chinamobile.demo.mapper.ServiceInfoMapper">
+
+    <insert id="insertBean" parameterType="com.chinamobile.demo.entities.UserInfo" keyProperty="id" useGeneratedKeys="true">
+        insert into table_one(user_name, pass_word, param_name, modify_time)
+        values(#{userName}, #{passWord}, #{paramName}, #{modifyTime})
+    </insert>
+    <insert id="insertBeanBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into table_one(user_name, pass_word, param_name, modify_time)
+        values
+        <foreach collection="list" item="item" index="index"
+                 separator=",">
+            (#{item.userName}, #{item.passWord}, #{item.paramName}, #{item.modifyTime})
+        </foreach>
+    </insert>
+    <select id="selectId" resultType="com.chinamobile.demo.entities.UserInfo" parameterType="hashmap">
+        select * from table_one
+        <where>
+            id=#{id}
+            <if test= "userName != null">
+                and user_name=#{userName}
+            </if>
+
+        </where>;
+    </select>
+    <select id="selectByEntity" resultType="com.chinamobile.demo.entities.UserInfo">
+        select * from table_one
+        <where>
+            id=#{id}
+            <if test= "userName != null">
+                and user_name=#{userName}
+            </if>
+
+        </where>;
+    </select>
+
+
+</mapper>
+
+

@@ -7,16 +7,16 @@ package com.chinamobile.demo.entities;
  *
  */
 public class Token {
-	private String id;
+	private String tokenId;
 	private String userName;
 	private Long expireTime;
 
-	public String getId() {
-		return id;
+	public String getTokenId() {
+		return tokenId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setTokenId(String tokenId) {
+		this.tokenId = tokenId;
 	}
 
 	public String getUserName() {

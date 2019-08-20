@@ -6,7 +6,7 @@ spring:
     url: jdbc:mariadb://127.0.0.1:8989/test
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
-    password: password
+    password: root
   
 
 #配置mybatis相关文件路径

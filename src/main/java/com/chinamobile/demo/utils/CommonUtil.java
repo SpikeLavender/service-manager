@@ -2,6 +2,8 @@ package com.chinamobile.demo.utils;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -25,4 +27,5 @@ public class CommonUtil {
 	public static JSONObject objectToJson(Object object){
 		return (JSONObject) JSONObject.toJSON(object);
 	}
+
 }
