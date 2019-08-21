@@ -1,5 +1,6 @@
 package com.chinamobile.demo.utils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -24,8 +25,12 @@ public class CommonUtil {
 		return uuid.replaceAll("-", "");
 	}
 
-	public static JSONObject objectToJson(Object object){
+	public static JSONObject objectToJsonObj(Object object){
 		return (JSONObject) JSONObject.toJSON(object);
+	}
+
+	public static JSONArray objectToJsonArr(Object object){
+		return (JSONArray) JSONArray.toJSON(object);
 	}
 
 }

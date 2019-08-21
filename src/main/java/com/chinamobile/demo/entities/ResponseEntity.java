@@ -1,5 +1,6 @@
 package com.chinamobile.demo.entities;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -8,7 +9,7 @@ import com.alibaba.fastjson.JSONObject;
  * @date 2019/8/20
  *
  */
-public class ResponseEntity {
+public class ResponseEntity<T> {
 	/**
 	 *包装类用来传输外部数据
 	 */
@@ -20,7 +21,7 @@ public class ResponseEntity {
 	private String message;
 
 	/*内容*/
-	private JSONObject data = new JSONObject();
+	private T data;
 
 	public ResponseEntity() {
 	}
@@ -31,7 +32,7 @@ public class ResponseEntity {
 		this.message = message;
 	}
 
-	public ResponseEntity(Object statusCode, String message, JSONObject data) {
+	public ResponseEntity(Object statusCode, String message, T data) {
 		this.statusCode = statusCode;
 		this.message = message;
 		this.data = data;
@@ -45,11 +46,11 @@ public class ResponseEntity {
 		this.statusCode = statusCode;
 	}
 
-	public JSONObject getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(JSONObject data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 
@@ -66,10 +67,10 @@ public class ResponseEntity {
 	}
 
 
-	public ResponseEntity putDataValue(String key, Object value) {
-		data.put(key, value);
-		return this;
-	}
+//	public ResponseEntity putData(String key, Object value) {
+//		data.put(key, value);
+//		return this;
+//	}
 
 	public static ResponseEntity repeat() {
 		return new ResponseEntity(

@@ -3,6 +3,7 @@ package com.chinamobile.demo.mapper;
 import com.chinamobile.demo.entities.OrderInfo;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @Mapper
 public interface OrderInfoMapper {
-	OrderInfo createOrder(Map<String, Object> map);
-	OrderInfo createOrder(OrderInfo orderInfo);
+	int createOrder(Map<String, Object> map);
+	int createOrder(OrderInfo orderInfo);
+	List<OrderInfo> getOrderList(Map<String, Object> map);
 }

@@ -38,33 +38,26 @@ public class TokenManagerService {
 	@Autowired
 	private UserInfoMapper userInfoMapper;
 
-	public ResponseEntity login(UserInfo userInfo) throws Exception {
+	public String login(UserInfo userInfo) throws Exception {
 		//ResponseEntity responseEntity = new ResponseEntity();
 		//校验账号密码
-		Long id = authorize(userInfo);
-		if (id != null) {
-			//生成token
-			IdentityUser user = new IdentityUser(userInfo.getUsername());
-			Long expireTime = System.currentTimeMillis() + vaildTime * 60 * 1000;
+		//生成token
+		IdentityUser user = new IdentityUser(userInfo.getUsername());
+		Long expireTime = System.currentTimeMillis() + vaildTime * 60 * 1000;
 
-			JSONObject json = new JSONObject();
-			json.put("expireTime", expireTime);
-			json.put("userId", id);
-			String token = generateToken(json);
-			//更新数据库中的token
+		JSONObject json = new JSONObject();
+		json.put("expireTime", expireTime);
+		json.put("userId", userInfo.getId());
+		String token = generateToken(json);
+		//更新数据库中的token
 
-			Map<String, Object> map = new HashMap<>();
-			map.put("token", token);
-			map.put("id", id);
-			map.put("expireTime", new Date(expireTime));
-			userInfoMapper.update(map);
+		Map<String, Object> map = new HashMap<>();
+		map.put("token", token);
+		map.put("id", userInfo.getId());
+		map.put("expireTime", new Date(expireTime));
+		userInfoMapper.update(map);
 
-			JSONObject resJson = new JSONObject();
-			resJson.put("token", token);
-			return new ResponseEntity("200", "get token success", resJson);
-		} else {
-			return new ResponseEntity("40001", "user name or password error");
-		}
+		return token;
 	}
 
 	public String generateToken(JSONObject userInfo) throws Exception {
@@ -88,15 +81,14 @@ public class TokenManagerService {
 		return null;
 	}
 
-	public Long authorizeToken(String token) throws Exception {
+	public Integer authorizeToken(String token) throws Exception {
 		//check if token has expired
 		//TODO: sql judge expired through expiredTime
 		Claims claims = TokenUtil.parseJWT(token, encryptKey);
 		if (claims.containsKey("userId")){
-			Long userId = (Long) claims.get("userId");
+			Integer userId = (Integer) claims.get("userId");
 			return userId;
 		}
-
 		return null;
 	}
 }

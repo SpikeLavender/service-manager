@@ -5,16 +5,16 @@ import java.util.List;
 
 public class OrderInfo {
 	private long id;
-	private long userInfoId;
+	private long userId;
 	private String serviceName;
 	private String serviceLevel;
 	private String sliceType;
-	private List<Date> orderTime;
-	private List<String> areaList;
-	private List<String> userList;
-	private List<String> appList;
-	private Date create_time;
-	private Date update_time;
+	private String orderTime;
+	private String areaList;
+	private String userList;
+	private String appList;
+	private Date createTime;
+	private Date updateTime;
 	private String orderStatus;
 	private Double fee;
 
@@ -26,12 +26,12 @@ public class OrderInfo {
 		this.id = id;
 	}
 
-	public long getUserInfoId() {
-		return userInfoId;
+	public long getUserId() {
+		return userId;
 	}
 
-	public void setUserInfoId(long userInfoId) {
-		this.userInfoId = userInfoId;
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
 
 	public String getServiceName() {
@@ -58,52 +58,52 @@ public class OrderInfo {
 		this.sliceType = sliceType;
 	}
 
-	public List<Date> getOrderTime() {
+	public String getOrderTime() {
 		return orderTime;
 	}
 
-	public void setOrderTime(List<Date> orderTime) {
+	public void setOrderTime(String orderTime) {
 		this.orderTime = orderTime;
 	}
 
-	public List<String> getAreaList() {
+	public String getAreaList() {
 		return areaList;
 	}
 
-	public void setAreaList(List<String> areaList) {
+	public void setAreaList(String areaList) {
 		this.areaList = areaList;
 	}
 
-	public List<String> getUserList() {
+	public String getUserList() {
 		return userList;
 	}
 
-	public void setUserList(List<String> userList) {
+	public void setUserList(String userList) {
 		this.userList = userList;
 	}
 
-	public List<String> getAppList() {
+	public String getAppList() {
 		return appList;
 	}
 
-	public void setAppList(List<String> appList) {
+	public void setAppList(String appList) {
 		this.appList = appList;
 	}
 
-	public Date getCreate_time() {
-		return create_time;
+	public Date getCreateTime() {
+		return createTime;
 	}
 
-	public void setCreate_time(Date create_time) {
-		this.create_time = create_time;
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
-	public Date getUpdate_time() {
-		return update_time;
+	public Date getUpdateTime() {
+		return updateTime;
 	}
 
-	public void setUpdate_time(Date update_time) {
-		this.update_time = update_time;
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
 	}
 
 	public String getOrderStatus() {

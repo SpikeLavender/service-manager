@@ -4,11 +4,27 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chinamobile.demo.mapper.OrderInfoMapper">
 
-    <insert id="createOrder" parameterType="com.chinamobile.demo.entities.OrderInfo" keyProperty="id" useGeneratedKeys="true">
-        insert into order_info(service_name, pass_word, param_name, modify_time)
-        values(#{userName}, #{passWord}, #{paramName}, #{modifyTime})
+    <insert id="createOrder" keyProperty="id" useGeneratedKeys="true">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into order_info(user_id, service_name, service_level, slice_type, order_time,
+        area_list, user_list, app_list, order_status, fee)
+        values(#{userId}, #{serviceName}, #{serviceLevel}, #{sliceType}, #{orderTime},
+        #{areaList}, #{userList}, #{appList}, #{orderStatus}, #{fee})
     </insert>
+    <select id="getOrderList" resultType="com.chinamobile.demo.entities.OrderInfo">
+        select * from order_info
+        <where>
+            <if test= "user_id != null">
+                user_id=#{userId}
+            </if>
+            <if test= "orderStatus != null">
+                and order_status=#{orderStatus}
+            </if>
 
+        </where>;
+    </select>
 </mapper>
 
 
