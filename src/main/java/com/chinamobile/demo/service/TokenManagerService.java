@@ -65,6 +65,7 @@ public class TokenManagerService {
 
 	public Long authorize(UserInfo user) {
 		//check if username and password is matched or if token has expired
+		//if has not expired token, return token
 		Map<String, Object> map = new HashMap<>();
 		map.put("username", user.getUsername());
 		map.put("password", user.getPassword());

@@ -16,7 +16,7 @@
     <select id="getOrderList" resultType="com.chinamobile.demo.entities.OrderInfo">
         select * from order_info
         <where>
-            <if test= "user_id != null">
+            <if test= "userId != null">
                 user_id=#{userId}
             </if>
             <if test= "orderStatus != null">

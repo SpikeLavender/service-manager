@@ -9,6 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ * @author hetengjiao@chinamobile.com
+ * @date 2019/8/20
+ *
+ */
 @Service
 public class OrderManageService {
 

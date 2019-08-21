@@ -1,7 +1,13 @@
 package com.chinamobile.demo.entities;
 
 import java.util.Date;
-import java.util.List;
+
+/**
+ *
+ * @author hetengjiao@chinamobile.com
+ * @date 2019/8/20
+ *
+ */
 
 public class OrderInfo {
 	private long id;
