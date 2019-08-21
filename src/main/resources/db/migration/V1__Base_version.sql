@@ -10,10 +10,10 @@ CREATE TABLE `user_info`  (
                               `expire_time` datetime(0) NULL DEFAULT NULL,
                               PRIMARY KEY (`id`) USING BTREE,
                               UNIQUE INDEX `username_and_password`(`user_name`, `password`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
 CREATE TABLE `order_info`  (
-                               `id` int(11) NOT NULL,
+                               `id` int(11) NOT NULL AUTO_INCREMENT,
                                `user_id` int(11) NULL DEFAULT NULL,
                                `service_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
                                `service_level` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
@@ -24,10 +24,8 @@ CREATE TABLE `order_info`  (
                                `app_list` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
                                `fee` double(255, 0) NULL DEFAULT NULL,
                                `order_status` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
-                               `create_time` datetime(0) NULL DEFAULT NULL,
+                               `create_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
                                `update_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-                               PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
-
-ALTER TABLE `service_manager`.`order_info`
-    ADD CONSTRAINT `user_info_and_order_info` FOREIGN KEY (`user_id`) REFERENCES `service_manager`.`order_info` (`id`);
+                               PRIMARY KEY (`id`) USING BTREE,
+                               INDEX `user_info_and_order_info`(`user_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
