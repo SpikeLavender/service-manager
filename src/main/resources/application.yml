@@ -3,10 +3,17 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mariadb://127.0.0.1:8989/test
+    url: jdbc:mariadb://127.0.0.1:8989/service-manager
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: root
+  flyway:
+    baseline-on-migrate: false
+    url: jdbc:mariadb://127.0.0.1:8989/service-manager
+    user: root
+    password: root
+    outOfOrder: true
+    validateOnMigrate: false
   
 
 #配置mybatis相关文件路径
