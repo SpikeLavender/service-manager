@@ -7,24 +7,33 @@ package com.chinamobile.demo.entities;
  *
  */
 public class Token {
-	private String tokenId;
-	private String userName;
+	private Long id;
+	private String token;
+	private Long userInfoId;
 	private Long expireTime;
 
-	public String getTokenId() {
-		return tokenId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setTokenId(String tokenId) {
-		this.tokenId = tokenId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getToken() {
+		return token;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public Long getUserInfoId() {
+		return userInfoId;
+	}
+
+	public void setUserInfoId(Long userInfoId) {
+		this.userInfoId = userInfoId;
 	}
 
 	public Long getExpireTime() {
@@ -34,5 +43,4 @@ public class Token {
 	public void setExpireTime(Long expireTime) {
 		this.expireTime = expireTime;
 	}
-
 }

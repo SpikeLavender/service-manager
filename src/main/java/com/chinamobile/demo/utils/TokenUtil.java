@@ -26,7 +26,7 @@ public class TokenUtil {
 
 	private static final String KEY_DECODE_ALGORITHM = "AES";
 	private static final String RSA_ALGORITHM = "RSA";
-	private static final String DEFAULT_USER_KEY = "userId";
+	private static final String DEFAULT_USER_KEY = "userName";
 	private static SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256; //默认HS256
 
 	/*
@@ -62,7 +62,7 @@ public class TokenUtil {
 		String jwtId = CommonUtil.getUUID();
 		JwtBuilder builder = Jwts.builder().setId(jwtId)
 				.setIssuedAt(nowDate)
-				.setSubject(paramMap.getString("userName"))
+				.setSubject(paramMap.getString("userId"))
 				.setExpiration(expDate)
 				.signWith(signatureAlgorithm, secretKey);
 		try{
@@ -148,4 +148,7 @@ public class TokenUtil {
 		}
 	}
 
+	public static Claims parseJWT(String token, String key) throws Exception {
+		return parseJWT(token, signatureAlgorithm, key);
+	}
 }

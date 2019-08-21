@@ -11,9 +11,9 @@ import java.util.Date;
  */
 public class UserInfo {
 	private long id;
-	private String userName;
+	private String username;
 	private String password;
-	private String tokenId;
+	private String token;
 	private Date createTime;
 	private Date updateTime;
 	private Date expireTime;
@@ -22,8 +22,8 @@ public class UserInfo {
 
 	}
 
-	public UserInfo(String tokenId) {
-		this.tokenId = tokenId;
+	public UserInfo(String token) {
+		this.token = token;
 	}
 
 	public long getId() {
@@ -34,12 +34,12 @@ public class UserInfo {
 		this.id = id;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
@@ -50,12 +50,12 @@ public class UserInfo {
 		this.password = password;
 	}
 
-	public String getTokenId() {
-		return tokenId;
+	public String getToken() {
+		return token;
 	}
 
-	public void setTokenId(String tokenId) {
-		this.tokenId = tokenId;
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	public Date getCreateTime() {

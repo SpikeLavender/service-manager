@@ -1,6 +1,7 @@
 package com.chinamobile.demo.service;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.chinamobile.demo.entities.IdentityUser;
 import com.chinamobile.demo.entities.ResponseEntity;
 import com.chinamobile.demo.entities.Token;
@@ -8,12 +9,15 @@ import com.chinamobile.demo.entities.UserInfo;
 import com.chinamobile.demo.mapper.UserInfoMapper;
 import com.chinamobile.demo.utils.CommonUtil;
 import com.chinamobile.demo.utils.TokenUtil;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -37,51 +41,62 @@ public class TokenManagerService {
 	public ResponseEntity login(UserInfo userInfo) throws Exception {
 		//ResponseEntity responseEntity = new ResponseEntity();
 		//校验账号密码
-		boolean res = authorize(userInfo);
-		if (res) {
+		Long id = authorize(userInfo);
+		if (id != null) {
 			//生成token
-			IdentityUser user = new IdentityUser(userInfo.getUserName());
-			Token token = generateToken(user);
-			//更新数据库中的tokenId
-			userInfo.setTokenId(token.getTokenId());
-			userInfo.setExpireTime(new Date(token.getExpireTime()));
-			userInfoMapper.update(userInfo);
-			return new ResponseEntity("200", "get token success", CommonUtil.objectToJson(token));
+			IdentityUser user = new IdentityUser(userInfo.getUsername());
+			Long expireTime = System.currentTimeMillis() + vaildTime * 60 * 1000;
+
+			JSONObject json = new JSONObject();
+			json.put("expireTime", expireTime);
+			json.put("userId", id);
+			String token = generateToken(json);
+			//更新数据库中的token
+
+			Map<String, Object> map = new HashMap<>();
+			map.put("token", token);
+			map.put("id", id);
+			map.put("expireTime", new Date(expireTime));
+			userInfoMapper.update(map);
+
+			JSONObject resJson = new JSONObject();
+			resJson.put("token", token);
+			return new ResponseEntity("200", "get token success", resJson);
 		} else {
 			return new ResponseEntity("40001", "user name or password error");
 		}
 	}
 
-	public Token generateToken(IdentityUser user) throws Exception {
-
+	public String generateToken(JSONObject userInfo) throws Exception {
 
 		Long expireTime = System.currentTimeMillis() + vaildTime * 60 * 1000;
-		String tokenId = TokenUtil.createJWT(encryptKey, CommonUtil.objectToJson(user), expireTime);
 
-		Token token = new Token();
-		token.setUserName(user.getUserName());
-		token.setTokenId(tokenId);
-		token.setExpireTime(expireTime);
+		String tokenId = TokenUtil.createJWT(encryptKey, userInfo, expireTime);
 
-		return token;
+		return tokenId;
 	}
 
-	public boolean authorize(UserInfo user) {
+	public Long authorize(UserInfo user) {
 		//check if username and password is matched or if token has expired
-		List<UserInfo> userInfos = userInfoMapper.getUserInfo(user);
-		if (!userInfos.isEmpty()) {
-			return true;
+		Map<String, Object> map = new HashMap<>();
+		map.put("username", user.getUsername());
+		map.put("password", user.getPassword());
+		UserInfo userInfo = userInfoMapper.getUserInfo(map);
+		if (userInfo != null) {
+			return userInfo.getId();
 		}
-		return false;
+		return null;
 	}
 
-	public boolean authorizeToken(String tokenId) {
+	public Long authorizeToken(String token) throws Exception {
 		//check if token has expired
 		//TODO: sql judge expired through expiredTime
-		List<UserInfo> userInfos = userInfoMapper.getUserInfo(new UserInfo(tokenId));
-		if (!userInfos.isEmpty()) {
-			return true;
+		Claims claims = TokenUtil.parseJWT(token, encryptKey);
+		if (claims.containsKey("userId")){
+			Long userId = (Long) claims.get("userId");
+			return userId;
 		}
-		return false;
+
+		return null;
 	}
 }

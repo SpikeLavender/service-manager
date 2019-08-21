@@ -3,13 +3,13 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mariadb://127.0.0.1:8989/service-manager
+    url: jdbc:mariadb://127.0.0.1:8989/service_manager
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: root
   flyway:
     baseline-on-migrate: false
-    url: jdbc:mariadb://127.0.0.1:8989/service-manager
+    url: jdbc:mariadb://127.0.0.1:8989/service_manager
     user: root
     password: root
     outOfOrder: true

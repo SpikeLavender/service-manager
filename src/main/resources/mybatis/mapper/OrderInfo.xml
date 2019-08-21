@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chinamobile.demo.mapper.OrderInfoMapper">
+
+    <insert id="createOrder" parameterType="com.chinamobile.demo.entities.OrderInfo" keyProperty="id" useGeneratedKeys="true">
+        insert into order_info(service_name, pass_word, param_name, modify_time)
+        values(#{userName}, #{passWord}, #{paramName}, #{modifyTime})
+    </insert>
+
+</mapper>
+
+

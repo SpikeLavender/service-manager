@@ -14,7 +14,7 @@ import java.util.Map;
  */
 @Mapper
 public interface UserInfoMapper {
-	int addUserInfo(UserInfo userInfo);
-	List<UserInfo> getUserInfo(UserInfo userInfo);
-	int update(UserInfo userInfo);
+	int addUserInfo(Map<String, Object> userInfo);
+	UserInfo getUserInfo(Map<String, Object> userInfo);
+	int update(Map<String, Object> userInfo);
 }

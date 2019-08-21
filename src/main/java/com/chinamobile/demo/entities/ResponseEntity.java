@@ -14,7 +14,7 @@ public class ResponseEntity {
 	 */
 
 	/*状态码*/
-	private Object code;
+	private Object statusCode;
 
 	/*状态信息*/
 	private String message;
@@ -25,24 +25,24 @@ public class ResponseEntity {
 	public ResponseEntity() {
 	}
 
-	public ResponseEntity(Object code, String message) {
+	public ResponseEntity(Object statusCode, String message) {
 		super();
-		this.code = code;
+		this.statusCode = statusCode;
 		this.message = message;
 	}
 
-	public ResponseEntity(Object code, String message, JSONObject data) {
-		this.code = code;
+	public ResponseEntity(Object statusCode, String message, JSONObject data) {
+		this.statusCode = statusCode;
 		this.message = message;
 		this.data = data;
 	}
 
-	public Object getCode() {
-		return code;
+	public Object getStatusCode() {
+		return statusCode;
 	}
 
-	public void setCode(Object code) {
-		this.code = code;
+	public void setStatusCode(Object statusCode) {
+		this.statusCode = statusCode;
 	}
 
 	public JSONObject getData() {
