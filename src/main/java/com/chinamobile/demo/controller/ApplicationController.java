@@ -78,4 +78,14 @@ public class ApplicationController {
 			return new ResponseEntity("40002", e.getMessage());
 		}
 	}
+
+	@DeleteMapping(value = "/logout")
+	public void login(HttpServletRequest httpServletRequest){
+		String token = httpServletRequest.getHeader("token");
+		try {
+			tokenManagerService.logout(token);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -2,12 +2,8 @@ package com.chinamobile.demo.service;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.chinamobile.demo.entities.IdentityUser;
-import com.chinamobile.demo.entities.ResponseEntity;
-import com.chinamobile.demo.entities.Token;
 import com.chinamobile.demo.entities.UserInfo;
 import com.chinamobile.demo.mapper.UserInfoMapper;
-import com.chinamobile.demo.utils.CommonUtil;
 import com.chinamobile.demo.utils.TokenUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -42,7 +37,6 @@ public class TokenManagerService {
 		//ResponseEntity responseEntity = new ResponseEntity();
 		//校验账号密码
 		//生成token
-		IdentityUser user = new IdentityUser(userInfo.getUsername());
 		Long expireTime = System.currentTimeMillis() + vaildTime * 60 * 1000;
 
 		JSONObject json = new JSONObject();
@@ -90,5 +84,20 @@ public class TokenManagerService {
 			return userId;
 		}
 		return null;
+	}
+
+	public boolean logout(String token) throws Exception {
+		//set the token expired
+		//TODO: sql judge expired through expiredTime
+		Claims claims = TokenUtil.parseJWT(token, encryptKey);
+		if (claims.containsKey("userId")){
+			Integer userId = (Integer) claims.get("userId");
+			Map<String, Object> map = new HashMap<>();
+			map.put("id", userId);
+			map.put("expireTime", new Date());
+			userInfoMapper.update(map);
+			return true;
+		}
+		return false;
 	}
 }
