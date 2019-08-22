@@ -1,7 +1,10 @@
 package com.chinamobile.demo.entities;
 
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
+
 
 /**
  *
@@ -10,12 +13,25 @@ import java.util.Date;
  *
  */
 public class UserInfo {
+	@ApiModelProperty(hidden = true)
 	private long id;
+
+	@ApiModelProperty(required = true)
 	private String username;
+
+	@ApiModelProperty(required = true)
 	private String password;
+
+	@ApiModelProperty(hidden = true)
 	private String token;
+
+	@ApiModelProperty(hidden = true)
 	private Date createTime;
+
+	@ApiModelProperty(hidden = true)
 	private Date updateTime;
+
+	@ApiModelProperty(hidden = true)
 	private Date expireTime;
 
 	public UserInfo() {
@@ -24,6 +40,11 @@ public class UserInfo {
 
 	public UserInfo(String token) {
 		this.token = token;
+	}
+
+	public UserInfo(String username, String password) {
+		this.username = username;
+		this.password = password;
 	}
 
 	public long getId() {

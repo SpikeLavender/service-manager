@@ -22,7 +22,7 @@ mybatis:
   mapper-locations: classpath:mybatis/mapper/*.xml
   #核心配置文件路径
   config-location: classpath:mybatis/mybatis-config.xml
-  
+  type-handlers-package: com.chinamobile.demo.handler
 token:
   key: KJHUhjjJYgYUllVbXhKDHXhkSyHjlNiVkYzWTBac1Yxkjhuad
   vaildTime: 120

@@ -41,9 +41,7 @@ public class Swagger2 {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("service-manager RESTful APIs")
-                .description("更多请关注http://www.baidu.com")
-                //.termsOfServiceUrl("http://www.baidu.com")
-                //.contact("sunf")
+                .description("测试swagger")
                 .version("1.0")
                 .build();
     }

@@ -10,7 +10,10 @@
         </selectKey>
         insert into order_info(user_id, service_name, service_level, slice_type, order_time,
         area_list, user_list, app_list, order_status, fee)
-        values(#{userId}, #{serviceName}, #{serviceLevel}, #{sliceType}, #{orderTime},
+        values(#{userId}, #{serviceName},
+        #{serviceLevel},
+        #{sliceType},
+        #{orderTime},
         #{areaList}, #{userList}, #{appList}, #{orderStatus}, #{fee})
     </insert>
     <select id="getOrderList" resultType="com.chinamobile.demo.entities.OrderInfo">

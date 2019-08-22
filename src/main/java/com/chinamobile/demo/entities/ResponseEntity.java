@@ -1,6 +1,9 @@
 package com.chinamobile.demo.entities;
 
 
+import io.swagger.annotations.Example;
+import io.swagger.annotations.ExampleProperty;
+
 /**
  *
  * @author hetengjiao@chinamobile.com
@@ -13,6 +16,7 @@ public class ResponseEntity<T> {
 	 */
 
 	/*状态码*/
+
 	private Object statusCode;
 
 	/*状态信息*/
