@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +47,7 @@ public class TokenManagerService {
 		Map<String, Object> map = new HashMap<>();
 		map.put("token", token);
 		map.put("id", userInfo.getId());
-		map.put("expireTime", new Date(expireTime));
+		map.put("expireTime", expireTime);
 		userInfoMapper.update(map);
 
 		return token;
@@ -76,26 +75,33 @@ public class TokenManagerService {
 		return null;
 	}
 
-	public Integer authorizeToken(String token) throws Exception {
+	public Integer authorizeToken(String token, StringBuilder msg) throws Exception {
 		//check if token has expired
 		//TODO: sql judge expired through expiredTime
 		Claims claims = TokenUtil.parseJWT(token, encryptKey);
 		if (claims.containsKey("userId")){
 			Integer userId = (Integer) claims.get("userId");
-			return userId;
+			Long expireTime = (Long) claims.getOrDefault("expireTime", 0);
+			if (expireTime > System.currentTimeMillis()) {
+				return userId;
+			}
+			msg.append("Authorize fail, the token has expire, please login again");
+			return null;
 		}
+		msg.append("Authorize fail, the token is unvaild");
 		return null;
 	}
 
 	public boolean logout(String token) throws Exception {
 		//set the token expired
-		//TODO: sql judge expired through expiredTime
+		//maybe not need
 		Claims claims = TokenUtil.parseJWT(token, encryptKey);
 		if (claims.containsKey("userId")){
 			Integer userId = (Integer) claims.get("userId");
+			//Long expireTime = System.currentTimeMillis();
 			Map<String, Object> map = new HashMap<>();
 			map.put("id", userId);
-			map.put("expireTime", new Date());
+			map.put("token", null);
 			userInfoMapper.update(map);
 			return true;
 		}

@@ -16,10 +16,10 @@ public class UserInfo {
 	@ApiModelProperty(hidden = true)
 	private long id;
 
-	@ApiModelProperty(required = true)
+	@ApiModelProperty(required = true, example = "hetengjiao")
 	private String username;
 
-	@ApiModelProperty(required = true)
+	@ApiModelProperty(required = true, example = "hetengjiao")
 	private String password;
 
 	@ApiModelProperty(hidden = true)
@@ -32,7 +32,7 @@ public class UserInfo {
 	private Date updateTime;
 
 	@ApiModelProperty(hidden = true)
-	private Date expireTime;
+	private Long expireTime;
 
 	public UserInfo() {
 
@@ -95,11 +95,11 @@ public class UserInfo {
 		this.updateTime = updateTime;
 	}
 
-	public Date getExpireTime() {
+	public Long getExpireTime() {
 		return expireTime;
 	}
 
-	public void setExpireTime(Date expireTime) {
+	public void setExpireTime(Long expireTime) {
 		this.expireTime = expireTime;
 	}
 }

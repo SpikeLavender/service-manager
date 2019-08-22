@@ -38,15 +38,14 @@ public class ApplicationController {
 	 * @ApiOperation(value = "接口说明", httpMethod ="接口请求方式", response ="接口返回参数类型", notes ="接口发布说明"
 	 * @ApiParam(required = "是否必须参数", name ="参数名称", value ="参数具体描述"
 	 */
-	@ApiOperation(value = "login interface")
 	@PostMapping(value = "/login")
 	public ResponseEntity login(@RequestBody UserInfo userInfo){
 		try {
 			logger.debug("Start login, use name is " + userInfo.getUsername());
 			Long id = tokenManagerService.authorize(userInfo);
 			if (id == null) {
-				logger.info("login fail, user name or password error");
-				return new ResponseEntity("40001", "user name or password error");
+				logger.debug("login fail, user name or password error");
+				return new ResponseEntity("401", "Authorized Failed: user name or password error");
 			}
 			userInfo.setId(id);
 			String token = tokenManagerService.login(userInfo);
@@ -65,7 +64,12 @@ public class ApplicationController {
 	                              @RequestHeader String token) {
 		try {
 			logger.debug("order5G start");
-			Integer userId = tokenManagerService.authorizeToken(token);
+			StringBuilder msg = new StringBuilder();
+			Integer userId = tokenManagerService.authorizeToken(token, msg);
+			if (userId == null) {
+				logger.error("listOrder fail,", msg);
+				return new ResponseEntity("401", "Authorized Failed: " + msg.toString());
+			}
 			orderInfo.setUserId(userId);
 			Long orderId = orderManageService.createOrder(orderInfo);
 			JSONObject resJson = new JSONObject();
@@ -82,7 +86,12 @@ public class ApplicationController {
 	public ResponseEntity listOrder(@RequestHeader String token) {
 		try {
 			logger.debug("listOrder start");
-			Integer userId = tokenManagerService.authorizeToken(token);
+			StringBuilder msg = new StringBuilder();
+			Integer userId = tokenManagerService.authorizeToken(token, msg);
+			if (userId == null) {
+				logger.error("listOrder fail,", msg);
+				return new ResponseEntity("401", "Authorized Failed: " + msg.toString());
+			}
 			List<OrderInfo> orders = orderManageService.getOrder(userId);
 			logger.debug("listOrder success,", orders.toString());
 			return new ResponseEntity("200", "success", orders);

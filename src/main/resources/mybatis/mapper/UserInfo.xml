@@ -19,10 +19,12 @@
             <if test= "password != null">
                 and password=#{password}
             </if>
-            <if test= "token != null">
-                and token=#{token}
+            <if test= "id != null">
+                and id=#{id}
             </if>
-
+            <if test="expireTime !=null and expireTime !='' ">
+                <![CDATA[ and expire_time  >=  #{expireTime}  ]]>
+            </if>
         </where>;
     </select>
 
