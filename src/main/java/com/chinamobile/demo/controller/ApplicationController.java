@@ -23,7 +23,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/v1/openapi")
-@Api(value = "ONS 5G业务开发系统")
 public class ApplicationController {
 
 	@Autowired
