@@ -7,7 +7,6 @@ import com.chinamobile.demo.entities.ResponseEntity;
 import com.chinamobile.demo.entities.UserInfo;
 import com.chinamobile.demo.service.OrderManageService;
 import com.chinamobile.demo.service.TokenManagerService;
-import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,13 +65,14 @@ public class ApplicationController {
 			StringBuilder msg = new StringBuilder();
 			Integer userId = tokenManagerService.authorizeToken(token, msg);
 			if (userId == null) {
-				logger.error("listOrder fail,", msg);
+				logger.error("order5G fail,", msg);
 				return new ResponseEntity("401", "Authorized Failed: " + msg.toString());
 			}
 			orderInfo.setUserId(userId);
 			Long orderId = orderManageService.createOrder(orderInfo);
 			JSONObject resJson = new JSONObject();
 			resJson.put("orderId", orderId);
+			resJson.put("fee", orderInfo.getFee());
 			logger.debug("order5G success, orderId is " + orderId);
 			return new ResponseEntity("200", "success", resJson);
 		} catch (Exception e) {
@@ -82,7 +82,17 @@ public class ApplicationController {
 	}
 
 	@GetMapping(value = "/listOrder")
-	public ResponseEntity listOrder(@RequestHeader String token) {
+	public ResponseEntity listOrder(@RequestHeader String token,
+	                                @RequestParam(value = "page", required = false)
+			                                    Integer page,
+	                                @RequestParam(value = "size", required = false)
+			                                    Integer size,
+	                                @RequestParam(value = "status", required = false)
+			                                    String status,
+	                                @RequestParam(value = "level", required = false)
+			                                    String level,
+	                                @RequestParam(value = "type", required = false)
+			                                    String type) {
 		try {
 			logger.debug("listOrder start");
 			StringBuilder msg = new StringBuilder();
@@ -91,7 +101,7 @@ public class ApplicationController {
 				logger.error("listOrder fail,", msg);
 				return new ResponseEntity("401", "Authorized Failed: " + msg.toString());
 			}
-			List<OrderInfo> orders = orderManageService.getOrder(userId);
+			List<OrderInfo> orders = orderManageService.getOrder(userId, page, size, status, level, type);
 			logger.debug("listOrder success,", orders.toString());
 			return new ResponseEntity("200", "success", orders);
 		} catch (Exception e) {

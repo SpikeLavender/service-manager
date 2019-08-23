@@ -33,4 +33,7 @@ public class CommonUtil {
 		return (JSONArray) JSONArray.toJSON(object);
 	}
 
+	public static boolean isStrEmpty(String s) {
+		return s != null && !s.isEmpty() ? true : false;
+	}
 }

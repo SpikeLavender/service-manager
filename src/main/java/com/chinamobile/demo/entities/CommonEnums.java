@@ -10,15 +10,25 @@ package com.chinamobile.demo.entities;
 public class CommonEnums {
 
 	public enum  ServiceLevelEnum implements BaseEnum {
-		STANDARD(0, "standard"),
-		GOLDEN(1, "golden"),
-		DIAMOND(2, "diamond");
+		STANDARD(0, "standard", 10.0),
+		GOLDEN(1, "golden", 20.0),
+		DIAMOND(2, "diamond", 30.0);
 		private int code;
 		private String name;
+		private double fee;
 
-		ServiceLevelEnum(int code, String name) {
+		ServiceLevelEnum(int code, String name, double fee) {
 			this.code = code;
 			this.name = name;
+			this.fee = fee;
+		}
+
+		public double getFee() {
+			return fee;
+		}
+
+		public void setFee(double fee) {
+			this.fee = fee;
 		}
 
 		@Override
@@ -28,15 +38,25 @@ public class CommonEnums {
 	}
 
 	public enum  SliceTypeEnum implements BaseEnum {
-		EMBB("eMBB", 0),
-		URLLC("uRLLC", 1),
-		MIOT("mIoT", 2);
+		EMBB("eMBB", 0, 1.0),
+		URLLC("uRLLC", 1, 1.5),
+		MIOT("mIoT", 2, 2.5);
 		private int code;
 		private String name;
+		private double fee;
 
-		SliceTypeEnum(String name, int code) {
+		SliceTypeEnum(String name, int code, double fee) {
 			this.name = name;
 			this.code = code;
+			this.fee = fee;
+		}
+
+		public double getFee() {
+			return fee;
+		}
+
+		public void setFee(double fee) {
+			this.fee = fee;
 		}
 
 		@Override
@@ -45,9 +65,10 @@ public class CommonEnums {
 		}
 	}
 	public enum  OrderStatusEnum implements BaseEnum {
-		SUCCESS("success", 0),
-		ERROR("error", 1),
-		PAYING("is paying", 2);
+		TO_BE_PAID("to be paid", 0),
+		SUCCESS("success", 5),
+		ERROR("error", 10);
+
 		private int code;
 		private String name;
 

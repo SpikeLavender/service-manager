@@ -22,11 +22,20 @@
             <if test= "userId != null">
                 user_id=#{userId}
             </if>
-            <if test= "orderStatus != null">
+            <if test= "orderStatus != null and orderStatus != ''">
                 and order_status=#{orderStatus}
             </if>
+            <if test= "sliceType != null and sliceType != ''">
+                and slice_type=#{sliceType}
+            </if>
+            <if test= "serviceLevel != null and serviceLevel != ''">
+                and service_level=#{serviceLevel}
+            </if>
+        </where>
+        <if test="startIndex != null and pageSize != null">
+            limit #{startIndex},#{pageSize};
+        </if>
 
-        </where>;
     </select>
 </mapper>
 

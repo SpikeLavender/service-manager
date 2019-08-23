@@ -27,12 +27,12 @@ public class OrderInfo {
 	private String serviceName;
 
 	@ApiModelProperty(example = "STANDARD")
-	private ServiceLevelEnum serviceLevel;
+	private ServiceLevelEnum serviceLevel = ServiceLevelEnum.STANDARD;
 
 	@ApiModelProperty(example = "EMBB")
-	private SliceTypeEnum sliceType;
+	private SliceTypeEnum sliceType = SliceTypeEnum.EMBB;
 
-	@ApiModelProperty(example = "1566462073000|1566462073997")
+	@ApiModelProperty(example = "1566460103997|1566462073997", required = true)
 	private String orderTime;
 
 	@ApiModelProperty(example = "area1|area2|area3")
