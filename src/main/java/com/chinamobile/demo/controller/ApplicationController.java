@@ -36,6 +36,7 @@ public class ApplicationController {
 	 * @ApiOperation(value = "接口说明", httpMethod ="接口请求方式", response ="接口返回参数类型", notes ="接口发布说明"
 	 * @ApiParam(required = "是否必须参数", name ="参数名称", value ="参数具体描述"
 	 */
+	@CrossOrigin(origins = "*")
 	@PostMapping(value = "/login")
 	public ResponseEntity login(@RequestBody UserInfo userInfo){
 		try {
@@ -53,10 +54,11 @@ public class ApplicationController {
 			return new ResponseEntity("200", "get token success", resJson);
 		} catch (Exception e) {
 			logger.error("login fail, the user name is " + userInfo.getUsername(), e.getMessage());
-			return new ResponseEntity("40002", e.getMessage());
+			return new ResponseEntity("500", "Server Inter error" + e.getMessage());
 		}
 	}
 
+	@CrossOrigin(origins = "*")
 	@PostMapping(value = "/order5G")
 	public ResponseEntity order5G(@RequestBody OrderInfo orderInfo,
 	                              @RequestHeader String token) {
@@ -77,10 +79,11 @@ public class ApplicationController {
 			return new ResponseEntity("200", "success", resJson);
 		} catch (Exception e) {
 			logger.error("order5G fail,", e.getMessage());
-			return new ResponseEntity("40002", e.getMessage());
+			return new ResponseEntity("500", "Server Inter error" + e.getMessage());
 		}
 	}
 
+	@CrossOrigin(origins = "*")
 	@GetMapping(value = "/listOrder")
 	public ResponseEntity listOrder(@RequestHeader String token,
 	                                @RequestParam(value = "page", required = false)
@@ -106,17 +109,20 @@ public class ApplicationController {
 			return new ResponseEntity("200", "success", orders);
 		} catch (Exception e) {
 			logger.error("listOrder fail,", e.getMessage());
-			return new ResponseEntity("40002", e.getMessage());
+			return new ResponseEntity("500", "Server Inter error" + e.getMessage());
 		}
 	}
 
+	@CrossOrigin(origins = "*")
 	@DeleteMapping(value = "/logout")
-	public void login(@RequestHeader String token){
+	public ResponseEntity login(@RequestHeader String token){
 		try {
 			tokenManagerService.logout(token);
 			logger.info("logout success");
+			return new ResponseEntity("204", "logout success");
 		} catch (Exception e) {
 			logger.error("logout fail,", e.getMessage());
+			return new ResponseEntity("500", "Server Inter error");
 		}
 	}
 }

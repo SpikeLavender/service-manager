@@ -65,7 +65,8 @@ public class CommonEnums {
 		}
 	}
 	public enum  OrderStatusEnum implements BaseEnum {
-		TO_BE_PAID("to be paid", 0),
+		WAITTING("waiting", 0),
+		//TODO: waiting
 		SUCCESS("success", 5),
 		ERROR("error", 10);
 

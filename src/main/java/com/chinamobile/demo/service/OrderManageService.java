@@ -27,7 +27,7 @@ public class OrderManageService {
 	public Long createOrder(OrderInfo orderInfo) {
 		//TODO: calc the fee
 		orderInfo.setFee(calcFee(orderInfo));
-		orderInfo.setOrderStatus(OrderStatusEnum.TO_BE_PAID);
+		orderInfo.setOrderStatus(OrderStatusEnum.SUCCESS);
 		orderInfoMapper.createOrder(orderInfo);
 		Long orderId = orderInfo.getId();
 		return orderId;
