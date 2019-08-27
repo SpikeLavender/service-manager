@@ -8,6 +8,7 @@ import com.chinamobile.demo.entities.UserInfo;
 import com.chinamobile.demo.service.OrderManageService;
 import com.chinamobile.demo.service.TokenManagerService;
 import com.chinamobile.demo.utils.CommonUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.hateoas.HypermediaAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.lang.annotation.Repeatable;
 import java.util.ArrayList;
@@ -93,6 +95,7 @@ public class ApplicationController {
 	@GetMapping(value = {
 			"/5g-orders",
 			"/5g-orders/level/{level}",
+			"/5g-orders/id/{id}",
 			"/5g-orders/type/{type}",
 			"/5g-orders/status/{status}",
 			"/5g-orders/level/{level}/type/{type}",
@@ -103,6 +106,7 @@ public class ApplicationController {
 	public ResponseEntity listOrder(@RequestHeader String token,
 	                                @RequestParam(value = "page", required = false) Integer page,
 	                                @RequestParam(value = "size", required = false) Integer size,
+	                                @PathVariable(value = "id", required = false) Long id,
 	                                @PathVariable(value = "level", required = false) String level,
 	                                @PathVariable(value = "type", required = false) String type,
 	                                @PathVariable(value = "status", required = false) String status) {
@@ -121,7 +125,11 @@ public class ApplicationController {
 			queryJson.put("orderStatus", CommonUtil.isStrEmpty(status) || status.equals("ALL") ? null : status);
 			queryJson.put("page", page);
 			queryJson.put("size", size);
-			List<OrderInfo> orders = orderManageService.getOrder(userId, queryJson);
+			queryJson.put("id", id);
+			if (id == null ) {
+				queryJson.put("userId", userId);
+			}
+			List<OrderInfo> orders = orderManageService.getOrder(queryJson);
 
 			logger.debug("listOrder success,", orders.toString());
 			return new ResponseEntity("200", "success", orders);
@@ -137,6 +145,7 @@ public class ApplicationController {
 	@CrossOrigin(origins = "*")
 	@GetMapping(value = {"/5g-orders/details"})
 	@ApiParam(value = "query 5g orders details by json")
+	@ApiIgnore
 	public ResponseEntity listOrders(@RequestHeader String token,
 	                                 @RequestParam(required = false, defaultValue = "{}",
 			                                value = "query{page, size, serviceLevel, sliceType, orderStatus}")
@@ -150,7 +159,8 @@ public class ApplicationController {
 				return new ResponseEntity("401", "Authorized Failed: " + msg.toString());
 			}
 			JSONObject queryJson = JSONObject.parseObject(query);
-			List<OrderInfo> orders = orderManageService.getOrder(userId, queryJson);
+			queryJson.put("userId", userId);
+			List<OrderInfo> orders = orderManageService.getOrder(queryJson);
 
 			logger.debug("listOrder success,", orders.toString());
 			return new ResponseEntity("200", "success", orders);

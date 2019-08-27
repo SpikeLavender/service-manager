@@ -66,9 +66,8 @@ public class OrderManageService {
 //		return orders;
 //	}
 
-	public List<OrderInfo> getOrder(Long userId, JSONObject queryJson) {
+	public List<OrderInfo> getOrder(JSONObject queryJson) {
 		//JSONObject queryJson;
-		queryJson.put("userId", userId);
 		if (queryJson.containsKey("page") && queryJson.getIntValue("page") > 0
 				&& queryJson.containsKey("size") && queryJson.getIntValue("size") > 0) {
 			queryJson.put("startIndex", (queryJson.getIntValue("page") - 1)
