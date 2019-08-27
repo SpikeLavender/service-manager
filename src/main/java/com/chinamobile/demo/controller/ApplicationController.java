@@ -7,6 +7,7 @@ import com.chinamobile.demo.entities.ResponseEntity;
 import com.chinamobile.demo.entities.UserInfo;
 import com.chinamobile.demo.service.OrderManageService;
 import com.chinamobile.demo.service.TokenManagerService;
+import com.chinamobile.demo.utils.CommonUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -115,9 +116,9 @@ public class ApplicationController {
 			}
 
 			JSONObject queryJson = new JSONObject();
-			queryJson.put("serviceLevel", level);
-			queryJson.put("sliceType", type);
-			queryJson.put("orderStatus", status);
+			queryJson.put("serviceLevel", CommonUtil.isStrEmpty(level) || level.equals("ALL") ? null : level);
+			queryJson.put("sliceType", CommonUtil.isStrEmpty(type) || type.equals("ALL") ? null : type);
+			queryJson.put("orderStatus", CommonUtil.isStrEmpty(status) || status.equals("ALL") ? null : status);
 			queryJson.put("page", page);
 			queryJson.put("size", size);
 			List<OrderInfo> orders = orderManageService.getOrder(userId, queryJson);

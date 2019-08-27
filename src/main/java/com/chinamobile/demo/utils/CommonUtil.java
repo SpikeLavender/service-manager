@@ -36,4 +36,7 @@ public class CommonUtil {
 	public static boolean isStrNotEmpty(String s) {
 		return s != null && !s.isEmpty() ? true : false;
 	}
+	public static boolean isStrEmpty(String s) {
+		return s == null || s.isEmpty() ? true : false;
+	}
 }
