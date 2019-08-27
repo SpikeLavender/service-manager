@@ -1,16 +1,16 @@
 package com.chinamobile.demo.service;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.chinamobile.demo.entities.CommonEnums.OrderStatusEnum;
 import com.chinamobile.demo.entities.OrderInfo;
 import com.chinamobile.demo.mapper.OrderInfoMapper;
-import com.chinamobile.demo.utils.CommonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -23,6 +23,8 @@ public class OrderManageService {
 
 	@Autowired
 	OrderInfoMapper orderInfoMapper;
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public Long createOrder(OrderInfo orderInfo) {
 		//TODO: calc the fee
@@ -43,24 +45,38 @@ public class OrderManageService {
 				* orderInfo.getSliceType().getFee();
 	}
 
-	public List<OrderInfo> getOrder(Integer userId, Integer page, Integer size,
-	                                String status, String level, String type) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("userId", userId);
-		if (page != null && size != null) {
-			map.put("startIndex", (page - 1) * size);
-			map.put("pageSize", size);
+//	public List<OrderInfo> getOrder(Integer userId, Integer page, Integer size,
+//	                                String status, String level, String type) {
+//		Map<String, Object> map = new HashMap<>();
+//		map.put("userId", userId);
+//		if (page != null && size != null) {
+//			map.put("startIndex", (page - 1) * size);
+//			map.put("pageSize", size);
+//		}
+//		if (CommonUtil.isStrNotEmpty(status)) {
+//			map.put("orderStatus", status);
+//		}
+//		if (CommonUtil.is(level)) {
+//			map.put("serviceLevel", level);
+//		}
+//		if (CommonUtil.isStrEmpty(type)) {
+//			map.put("sliceType", type);
+//		}
+//		List<OrderInfo> orders= orderInfoMapper.getOrderList(map);
+//		return orders;
+//	}
+
+	public List<OrderInfo> getOrder(Long userId, JSONObject queryJson) {
+		//JSONObject queryJson;
+		queryJson.put("userId", userId);
+		if (queryJson.containsKey("page") && queryJson.getIntValue("page") > 0
+				&& queryJson.containsKey("size") && queryJson.getIntValue("size") > 0) {
+			queryJson.put("startIndex", (queryJson.getIntValue("page") - 1)
+					* queryJson.getIntValue("size"));
+			queryJson.put("pageSize", queryJson.getIntValue("size"));
 		}
-		if (CommonUtil.isStrEmpty(status)) {
-			map.put("orderStatus", status);
-		}
-		if (CommonUtil.isStrEmpty(level)) {
-			map.put("serviceLevel", level);
-		}
-		if (CommonUtil.isStrEmpty(type)) {
-			map.put("sliceType", type);
-		}
-		List<OrderInfo> orders= orderInfoMapper.getOrderList(map);
+		List<OrderInfo> orders= orderInfoMapper.getOrderList(queryJson);
+		logger.debug("get order list success: " + orders.toString());
 		return orders;
 	}
 }

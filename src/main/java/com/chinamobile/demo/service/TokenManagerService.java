@@ -75,15 +75,15 @@ public class TokenManagerService {
 		return null;
 	}
 
-	public Integer authorizeToken(String token, StringBuilder msg) throws Exception {
+	public Long authorizeToken(String token, StringBuilder msg) throws Exception {
 		//check if token has expired
 		//TODO: sql judge expired through expiredTime
 		Claims claims = TokenUtil.parseJWT(token, encryptKey);
 		if (claims.containsKey("userId")){
-			Integer userId = (Integer) claims.get("userId");
+ 			Integer userId = (Integer)claims.get("userId");
 			Long expireTime = (Long) claims.getOrDefault("expireTime", 0);
 			if (expireTime > System.currentTimeMillis()) {
-				return userId;
+				return userId.longValue();
 			}
 			msg.append("Authorize fail, the token has expire, please login again");
 			return null;

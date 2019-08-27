@@ -7,11 +7,16 @@ import com.chinamobile.demo.entities.ResponseEntity;
 import com.chinamobile.demo.entities.UserInfo;
 import com.chinamobile.demo.service.OrderManageService;
 import com.chinamobile.demo.service.TokenManagerService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.hateoas.HypermediaAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.annotation.Repeatable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,18 +59,18 @@ public class ApplicationController {
 			return new ResponseEntity("200", "get token success", resJson);
 		} catch (Exception e) {
 			logger.error("login fail, the user name is " + userInfo.getUsername(), e.getMessage());
-			return new ResponseEntity("500", "Server Inter error" + e.getMessage());
+			return new ResponseEntity("500", "Server Inter error: " + e.getMessage());
 		}
 	}
 
 	@CrossOrigin(origins = "*")
-	@PostMapping(value = "/order5G")
+	@PostMapping(value = "/5g-orders")
 	public ResponseEntity order5G(@RequestBody OrderInfo orderInfo,
 	                              @RequestHeader String token) {
 		try {
 			logger.debug("order5G start");
 			StringBuilder msg = new StringBuilder();
-			Integer userId = tokenManagerService.authorizeToken(token, msg);
+			Long userId = tokenManagerService.authorizeToken(token, msg);
 			if (userId == null) {
 				logger.error("order5G fail,", msg);
 				return new ResponseEntity("401", "Authorized Failed: " + msg.toString());
@@ -76,41 +81,85 @@ public class ApplicationController {
 			resJson.put("orderId", orderId);
 			resJson.put("fee", orderInfo.getFee());
 			logger.debug("order5G success, orderId is " + orderId);
-			return new ResponseEntity("200", "success", resJson);
+			return new ResponseEntity("200", "create order success", resJson);
 		} catch (Exception e) {
 			logger.error("order5G fail,", e.getMessage());
-			return new ResponseEntity("500", "Server Inter error" + e.getMessage());
+			return new ResponseEntity("500", "Server Inter error: " + e.getMessage());
 		}
 	}
 
 	@CrossOrigin(origins = "*")
-	@GetMapping(value = "/listOrder")
+	@GetMapping(value = {
+			"/5g-orders",
+			"/5g-orders/level/{level}",
+			"/5g-orders/type/{type}",
+			"/5g-orders/status/{status}",
+			"/5g-orders/level/{level}/type/{type}",
+			"/5g-orders/level/{level}/status/{status}",
+			"/5g-orders/level/{level}/type/{type}/status/{status}"
+	})
+	@ApiOperation(value = "query 5g orders by filter")
 	public ResponseEntity listOrder(@RequestHeader String token,
-	                                @RequestParam(value = "page", required = false)
-			                                    Integer page,
-	                                @RequestParam(value = "size", required = false)
-			                                    Integer size,
-	                                @RequestParam(value = "status", required = false)
-			                                    String status,
-	                                @RequestParam(value = "level", required = false)
-			                                    String level,
-	                                @RequestParam(value = "type", required = false)
-			                                    String type) {
+	                                @RequestParam(value = "page", required = false) Integer page,
+	                                @RequestParam(value = "size", required = false) Integer size,
+	                                @PathVariable(value = "level", required = false) String level,
+	                                @PathVariable(value = "type", required = false) String type,
+	                                @PathVariable(value = "status", required = false) String status) {
+		StringBuilder msg = new StringBuilder();
 		try {
 			logger.debug("listOrder start");
-			StringBuilder msg = new StringBuilder();
-			Integer userId = tokenManagerService.authorizeToken(token, msg);
+			Long userId = tokenManagerService.authorizeToken(token, msg);
 			if (userId == null) {
 				logger.error("listOrder fail,", msg);
 				return new ResponseEntity("401", "Authorized Failed: " + msg.toString());
 			}
-			List<OrderInfo> orders = orderManageService.getOrder(userId, page, size, status, level, type);
+
+			JSONObject queryJson = new JSONObject();
+			queryJson.put("serviceLevel", level);
+			queryJson.put("sliceType", type);
+			queryJson.put("orderStatus", status);
+			queryJson.put("page", page);
+			queryJson.put("size", size);
+			List<OrderInfo> orders = orderManageService.getOrder(userId, queryJson);
+
 			logger.debug("listOrder success,", orders.toString());
 			return new ResponseEntity("200", "success", orders);
+
 		} catch (Exception e) {
 			logger.error("listOrder fail,", e.getMessage());
-			return new ResponseEntity("500", "Server Inter error" + e.getMessage());
+			msg.append(e.getMessage());
+			return new ResponseEntity("500", "Server Inter error: " + msg);
 		}
+
+	}
+
+	@CrossOrigin(origins = "*")
+	@GetMapping(value = {"/5g-orders/details"})
+	@ApiParam(value = "query 5g orders details by json")
+	public ResponseEntity listOrders(@RequestHeader String token,
+	                                 @RequestParam(required = false, defaultValue = "{}",
+			                                value = "query{page, size, serviceLevel, sliceType, orderStatus}")
+			                                String query) {
+		StringBuilder msg = new StringBuilder();
+		try {
+			logger.debug("listOrder start");
+			Long userId = tokenManagerService.authorizeToken(token, msg);
+			if (userId == null) {
+				logger.error("listOrder fail,", msg);
+				return new ResponseEntity("401", "Authorized Failed: " + msg.toString());
+			}
+			JSONObject queryJson = JSONObject.parseObject(query);
+			List<OrderInfo> orders = orderManageService.getOrder(userId, queryJson);
+
+			logger.debug("listOrder success,", orders.toString());
+			return new ResponseEntity("200", "success", orders);
+
+		} catch (Exception e) {
+			logger.error("listOrder fail,", e.getMessage());
+			msg.append(e.getMessage());
+			return new ResponseEntity("500", "Server Inter error: " + msg);
+		}
+
 	}
 
 	@CrossOrigin(origins = "*")
