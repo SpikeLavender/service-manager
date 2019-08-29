@@ -18,6 +18,27 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <MARIADB_IP>127.0.0.1</MARIADB_IP>
+            </properties>
+        </profile>
+        <profile>
+            <id>remote</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <MARIADB_IP>172.24.47.192</MARIADB_IP>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
