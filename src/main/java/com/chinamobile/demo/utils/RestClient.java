@@ -1,7 +1,8 @@
 package com.chinamobile.demo.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.chinamobile.demo.entities.SystemException;
-import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +130,7 @@ public class RestClient {
         Map<String, Object> map = new HashMap<>();
         map.put("event", eventMap);
 
-        JSONObject jsonObj = JSONObject.fromObject(map);
+        JSONObject jsonObj = (JSONObject) JSON.toJSON(map);
 
         logger.info(jsonObj.toString());
         return jsonObj.toString();
