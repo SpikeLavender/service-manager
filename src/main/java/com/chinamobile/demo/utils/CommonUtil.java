@@ -34,9 +34,13 @@ public class CommonUtil {
 	}
 
 	public static boolean isStrNotEmpty(String s) {
-		return s != null && !s.isEmpty() ? true : false;
+		return !isStrEmpty(s);
 	}
 	public static boolean isStrEmpty(String s) {
-		return s == null || s.isEmpty() ? true : false;
+		if (s == null) {
+			return true;
+		}
+		s = s.replaceAll(" ", "");
+		return s.isEmpty();
 	}
 }
