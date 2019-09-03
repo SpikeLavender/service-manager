@@ -4,6 +4,7 @@ package com.chinamobile.demo.service;
 import com.alibaba.fastjson.JSONObject;
 import com.chinamobile.demo.entities.CommonEnums.OrderStatusEnum;
 import com.chinamobile.demo.entities.OrderInfo;
+import com.chinamobile.demo.entities.Pagination;
 import com.chinamobile.demo.mapper.OrderInfoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,7 @@ public class OrderManageService {
 //		return orders;
 //	}
 
-	public List<OrderInfo> getOrder(JSONObject queryJson) {
+	public Pagination getOrder(JSONObject queryJson) {
 		//JSONObject queryJson;
 		if (queryJson.containsKey("page") && queryJson.getIntValue("page") > 0
 				&& queryJson.containsKey("size") && queryJson.getIntValue("size") > 0) {
@@ -75,7 +76,11 @@ public class OrderManageService {
 			queryJson.put("pageSize", queryJson.getIntValue("size"));
 		}
 		List<OrderInfo> orders= orderInfoMapper.getOrderList(queryJson);
+		Pagination pagination = new Pagination();
+		pagination.setOrderInfoList(orders);
+		Integer orderCount = orderInfoMapper.getOrderCount(queryJson.getInteger("userId"));
+		pagination.setTotal(orderCount);
 		logger.debug("get order list success: " + orders.toString());
-		return orders;
+		return pagination;
 	}
 }
