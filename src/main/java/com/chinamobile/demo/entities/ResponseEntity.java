@@ -1,9 +1,5 @@
 package com.chinamobile.demo.entities;
 
-
-import io.swagger.annotations.Example;
-import io.swagger.annotations.ExampleProperty;
-
 /**
  *
  * @author hetengjiao@chinamobile.com

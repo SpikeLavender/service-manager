@@ -35,8 +35,14 @@
                 and service_level=#{serviceLevel}
             </if>
         </where>
-        <if test="startIndex != null and pageSize != null">
-            limit #{startIndex},#{pageSize};
+        <if test="pageSize != null">
+            <if test="startIndex != null">
+                limit #{startIndex},#{pageSize}
+            </if>
+            <if test="startIndex == null">
+                limit #{pageSize}
+            </if>
+            ;
         </if>
 
     </select>
