@@ -33,11 +33,11 @@ public class RestClient {
     /**
      * 发送带宽调整事件
      */
-    public static void sendBandWidthEvent(String exceptionType, String sourceIP) throws SystemException {
+    public static void sendBandWidthEvent(String exceptionType) throws SystemException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
-        String body = getBodyByExceptionType(exceptionType.toLowerCase(), sourceIP);
+        String body = getBodyByExceptionType(exceptionType.toLowerCase());
         HttpEntity entity = new HttpEntity(body, headers);
 
         RestTemplate client = new RestTemplate();
@@ -56,11 +56,10 @@ public class RestClient {
      * 获取Body体
      *
      * @param exceptionType 下发调整类型
-     * @param sourceIP      源地址
      * @return
      * @throws SystemException
      */
-    private static String getBodyByExceptionType(String exceptionType, String sourceIP) throws SystemException {
+    private static String getBodyByExceptionType(String exceptionType) throws SystemException {
         String typeValue = (NORMAL.equals(exceptionType) || ABNORMAL.equals(exceptionType)) ? exceptionType : null;
 
 //        if (StringUtils.isBlank(typeValue) || StringUtils.isBlank(sourceIP)) {
@@ -147,7 +146,7 @@ public class RestClient {
 
     public static void main(String[] args) {
         try {                                           //beijing:192.168.13.3 hkg:192.168.11.120
-            sendBandWidthEvent("normal", null);
+            sendBandWidthEvent("normal");
         } catch (Exception ex) {
             System.out.println(ex);
         }

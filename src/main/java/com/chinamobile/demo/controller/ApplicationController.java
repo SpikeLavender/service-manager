@@ -3,6 +3,7 @@ package com.chinamobile.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chinamobile.demo.entities.OrderInfo;
+import com.chinamobile.demo.entities.Pagination;
 import com.chinamobile.demo.entities.ResponseEntity;
 import com.chinamobile.demo.entities.UserInfo;
 import com.chinamobile.demo.service.OrderManageService;
@@ -126,11 +127,10 @@ public class ApplicationController {
 			queryJson.put("page", page);
 			queryJson.put("size", size);
 			queryJson.put("id", id);
-			if (id == null ) {
+			//if (id == null ) {
 				queryJson.put("userId", userId);
-			}
-			List<OrderInfo> orders = orderManageService.getOrder(queryJson);
-
+			//}
+			Pagination orders = orderManageService.getOrder(queryJson);
 			logger.debug("listOrder success,", orders.toString());
 			return new ResponseEntity("200", "success", orders);
 
@@ -160,7 +160,7 @@ public class ApplicationController {
 			}
 			JSONObject queryJson = JSONObject.parseObject(query);
 			queryJson.put("userId", userId);
-			List<OrderInfo> orders = orderManageService.getOrder(queryJson);
+			Pagination orders = orderManageService.getOrder(queryJson);
 
 			logger.debug("listOrder success,", orders.toString());
 			return new ResponseEntity("200", "success", orders);
