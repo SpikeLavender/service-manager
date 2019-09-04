@@ -124,6 +124,8 @@ public class ApplicationController {
 			queryJson.put("userId", userId);
 
 			Pagination orders = orderManageService.getOrder(queryJson);
+			orders.setCurrentPage(page);
+			orders.setPageSize(size);
 			logger.debug("listOrder success,", orders.toString());
 			return new ResponseEntity<>("200", "success", orders);
 
