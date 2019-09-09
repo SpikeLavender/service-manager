@@ -5,13 +5,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.chinamobile.demo.entities.CommonEnums.OrderStatusEnum;
 import com.chinamobile.demo.entities.OrderInfo;
 import com.chinamobile.demo.entities.Pagination;
+import com.chinamobile.demo.entities.SystemException;
 import com.chinamobile.demo.mapper.OrderInfoMapper;
+import com.chinamobile.demo.utils.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -27,13 +32,15 @@ public class OrderManageService {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public Long createOrder(OrderInfo orderInfo) {
+	public Long createOrder(OrderInfo orderInfo) throws SystemException {
 		//TODO: calc the fee
 		orderInfo.setFee(calcFee(orderInfo));
 		orderInfo.setOrderStatus(OrderStatusEnum.SUCCESS);
-		orderInfoMapper.createOrder(orderInfo);
-		Long orderId = orderInfo.getId();
-		return orderId;
+		ResponseEntity response = RestClient.sendBandWidthEvent(RestClient.ABNORMAL);
+		if(response.getStatusCodeValue() == HttpStatus.ACCEPTED.value() || Objects.equals(response.getBody(), "Accepted")){
+			orderInfoMapper.createOrder(orderInfo);
+		}
+		return orderInfo.getId();
 	}
 
 	private Double calcFee(OrderInfo orderInfo) {
