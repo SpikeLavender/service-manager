@@ -22,18 +22,18 @@ public class RestClient {
      */
     private final static String BANDWIDTHEVENTURL = "http://192.168.10.251:8080/eventListener/v5";
 
-    private final static String FIVEGEVENTURL = "http://192.168.10.212/api/ves-collector/v5";
+    private final static String FIVEGEVENTURL = "http://159.138.56.28:30345/eventListener/v5";
 
-    private final static String NORMAL = "normal";
+    public final static String NORMAL = "normal";
 
-    private final static String ABNORMAL = "abnormal";
+    public final static String ABNORMAL = "abnormal";
 
     private final static int ERRORCODE = 1301;
 
     /**
      * 发送带宽调整事件
      */
-    public static void sendBandWidthEvent(String exceptionType) throws SystemException {
+    public static ResponseEntity sendBandWidthEvent(String exceptionType) throws SystemException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
@@ -49,6 +49,7 @@ public class RestClient {
         }
         String responseStr = response.getBody();
         logger.info("response:"+responseStr);
+        return response;
 
     }
 
@@ -146,7 +147,7 @@ public class RestClient {
 
     public static void main(String[] args) {
         try {                                           //beijing:192.168.13.3 hkg:192.168.11.120
-            sendBandWidthEvent("normal");
+            sendBandWidthEvent(NORMAL);
         } catch (Exception ex) {
             System.out.println(ex);
         }
