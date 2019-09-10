@@ -56,7 +56,7 @@ public class ApplicationController {
 			logger.debug("login success, the user name is " + userInfo.getUsername());
 			return new ResponseEntity<>("200", "get token success", resJson);
 		} catch (Exception e) {
-			logger.error("login fail, the user name is " + userInfo.getUsername(), e.getMessage());
+			logger.error("login fail, the user name is " + userInfo.getUsername() + ", " + e.getMessage());
 			return new ResponseEntity<>("500", "Server Inter error: " + e.getMessage());
 		}
 	}
@@ -70,7 +70,7 @@ public class ApplicationController {
 			StringBuilder msg = new StringBuilder();
 			Long userId = tokenManagerService.authorizeToken(token, msg);
 			if (userId == null) {
-				logger.error("order5G fail,", msg);
+				logger.error("order5G fail, " + msg);
 				return new ResponseEntity<>("401", "Authorized Failed: " + msg.toString());
 			}
 			orderInfo.setUserId(userId);
@@ -81,7 +81,7 @@ public class ApplicationController {
 			logger.debug("order5G success, orderId is " + orderId);
 			return new ResponseEntity<>("200", "create order success", resJson);
 		} catch (Exception e) {
-			logger.error("order5G fail,", e.getMessage());
+			logger.error("order5G fail, " + e.getMessage());
 			return new ResponseEntity<>("500", "Server Inter error: " + e.getMessage());
 		}
 	}
@@ -110,7 +110,7 @@ public class ApplicationController {
 			logger.debug("listOrder start");
 			Long userId = tokenManagerService.authorizeToken(token, msg);
 			if (userId == null) {
-				logger.error("listOrder fail,", msg);
+				logger.error("listOrder fail, " + msg);
 				return new ResponseEntity<>("401", "Authorized Failed: " + msg.toString());
 			}
 
@@ -126,11 +126,11 @@ public class ApplicationController {
 			Pagination orders = orderManageService.getOrder(queryJson);
 			orders.setCurrentPage(page);
 			orders.setPageSize(size);
-			logger.debug("listOrder success,", orders.toString());
+			logger.debug("listOrder success, " + orders.toString());
 			return new ResponseEntity<>("200", "success", orders);
 
 		} catch (Exception e) {
-			logger.error("listOrder fail,", e.getMessage());
+			logger.error("listOrder fail, " + e.getMessage());
 			msg.append(e.getMessage());
 			return new ResponseEntity<>("500", "Server Inter error: " + msg);
 		}
@@ -145,7 +145,7 @@ public class ApplicationController {
 			logger.info("logout success");
 			return new ResponseEntity("204", "logout success");
 		} catch (Exception e) {
-			logger.error("logout fail,", e.getMessage());
+			logger.error("logout fail, " + e.getMessage());
 			return new ResponseEntity("500", "Server Inter error");
 		}
 	}

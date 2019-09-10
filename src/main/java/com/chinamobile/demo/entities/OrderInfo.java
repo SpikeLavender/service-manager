@@ -3,6 +3,8 @@ package com.chinamobile.demo.entities;
 import com.chinamobile.demo.entities.CommonEnums.ServiceLevelEnum;
 import com.chinamobile.demo.entities.CommonEnums.SliceTypeEnum;
 import com.chinamobile.demo.entities.CommonEnums.OrderStatusEnum;
+import com.chinamobile.demo.entities.CommonEnums.ServiceTypeEnum;
+import com.chinamobile.demo.utils.CommonUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -26,14 +28,20 @@ public class OrderInfo {
 	@ApiModelProperty(example = "service")
 	private String serviceName;
 
+	@ApiModelProperty(example = "SHARED")
+	private ServiceTypeEnum serviceType = ServiceTypeEnum.PRIVATE;
+
 	@ApiModelProperty(example = "STANDARD")
 	private ServiceLevelEnum serviceLevel = ServiceLevelEnum.STANDARD;
 
 	@ApiModelProperty(example = "EMBB")
 	private SliceTypeEnum sliceType = SliceTypeEnum.EMBB;
 
-	@ApiModelProperty(example = "1566460103997|1566462073997", required = true)
+	@ApiModelProperty(example = "1566460103997|1566462073997")
 	private String orderTime;
+
+	@ApiModelProperty(example = "1200")
+	private Long durationTime = null;
 
 	@ApiModelProperty(example = "area1|area2|area3")
 	private String areaList;
@@ -80,6 +88,14 @@ public class OrderInfo {
 		this.serviceName = serviceName;
 	}
 
+	public ServiceTypeEnum getServiceType() {
+		return serviceType;
+	}
+
+	public void setServiceType(ServiceTypeEnum serviceType) {
+		this.serviceType = serviceType;
+	}
+
 	public ServiceLevelEnum getServiceLevel() {
 		return serviceLevel;
 	}
@@ -97,11 +113,29 @@ public class OrderInfo {
 	}
 
 	public String getOrderTime() {
+		if (CommonUtil.isStrEmpty(orderTime)){
+			this.setOrderTime(orderTime);
+		}
 		return orderTime;
 	}
 
 	public void setOrderTime(String orderTime) {
-		this.orderTime = orderTime;
+		//first judge order time
+		if (CommonUtil.isStrNotEmpty(orderTime)) {
+			this.orderTime = orderTime;
+		} else if (durationTime != null){
+			Long endTime = System.currentTimeMillis() + durationTime * 60 * 1000;
+			this.orderTime = System.currentTimeMillis() + "|" + endTime;
+		}
+	}
+
+	public Long getDurationTime() {
+		return Long.parseLong(orderTime.split("\\|")[1])
+				- Long.parseLong(orderTime.split("\\|")[0]);
+	}
+
+	public void setDurationTime(Long durationTime) {
+		this.durationTime = durationTime;
 	}
 
 	public String getAreaList() {

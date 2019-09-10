@@ -35,11 +35,15 @@ public class OrderManageService {
 	public Long createOrder(OrderInfo orderInfo) throws SystemException {
 		//TODO: calc the fee
 		orderInfo.setFee(calcFee(orderInfo));
-		orderInfo.setOrderStatus(OrderStatusEnum.SUCCESS);
+		orderInfo.setOrderStatus(OrderStatusEnum.WAITING);
 		ResponseEntity response = RestClient.sendBandWidthEvent(RestClient.ABNORMAL);
 		if(response.getStatusCodeValue() == HttpStatus.ACCEPTED.value() || Objects.equals(response.getBody(), "Accepted")){
-			orderInfoMapper.createOrder(orderInfo);
+			orderInfo.setOrderStatus(OrderStatusEnum.READY);
+			//orderInfoMapper.createOrder(orderInfo);
+		} else {
+			orderInfo.setOrderStatus(OrderStatusEnum.CREATE_FAIL);
 		}
+		orderInfoMapper.createOrder(orderInfo);
 		return orderInfo.getId();
 	}
 

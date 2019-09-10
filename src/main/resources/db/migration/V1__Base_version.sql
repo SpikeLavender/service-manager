@@ -29,3 +29,4 @@ CREATE TABLE `order_info`  (
                                PRIMARY KEY (`id`) USING BTREE,
                                INDEX `user_id_index`(`user_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+

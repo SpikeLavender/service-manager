@@ -65,10 +65,12 @@ public class CommonEnums {
 		}
 	}
 	public enum  OrderStatusEnum implements BaseEnum {
-		WAITTING("waiting", 0),
-		//TODO: waiting
-		SUCCESS("success", 5),
-		ERROR("error", 10);
+		WAITING("waiting", 0),
+		READY("ready", 3),
+		RUNNING("running", 5),
+		STOPPING("stopping", 14),
+		STOPPED("stopped", 15),
+		CREATE_FAIL("create error", 16);
 
 		private int code;
 		private String name;
@@ -83,4 +85,20 @@ public class CommonEnums {
 			return code;
 		}
 	}
+
+	public enum  ServiceTypeEnum implements BaseEnum {
+		PRIVATE(0),
+		SHARED(1);
+		private int code;
+
+		ServiceTypeEnum(int code) {
+			this.code = code;
+		}
+
+		@Override
+		public int getCode() {
+			return code;
+		}
+	}
+
 }

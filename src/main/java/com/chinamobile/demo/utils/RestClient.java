@@ -6,13 +6,16 @@ import com.chinamobile.demo.entities.SystemException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 
+@Component
 public class RestClient {
 
     private static final Logger logger = LoggerFactory.getLogger(RestClient.class);
@@ -22,9 +25,15 @@ public class RestClient {
      */
     private final static String BANDWIDTHEVENTURL = "http://192.168.10.251:8080/eventListener/v5";
 
-    private final static String FIVEGEVENTURL = "http://159.138.56.28:30345/eventListener/v5";
+	private static String FIVEGEVENTURL;
 
-    public final static String NORMAL = "normal";
+	@Value("${onap.5g.url}")
+	public void setFivegeventurl(String url) {
+		RestClient.FIVEGEVENTURL = url;
+	}
+
+
+	public final static String NORMAL = "normal";
 
     public final static String ABNORMAL = "abnormal";
 

@@ -26,3 +26,7 @@ mybatis:
 token:
   key: KJHUhjjJYgYUllVbXhKDHXhkSyHjlNiVkYzWTBac1Yxkjhuad
   vaildTime: 120
+
+onap:
+  5g:
+    url: http://159.138.56.28:30345/eventListener/v5

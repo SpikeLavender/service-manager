@@ -8,9 +8,10 @@
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             select LAST_INSERT_ID()
         </selectKey>
-        insert into order_info(user_id, service_name, service_level, slice_type, order_time,
+        insert into order_info(user_id, service_name, service_type, service_level, slice_type, order_time,
         area_list, user_list, app_list, order_status, fee)
         values(#{userId}, #{serviceName},
+        #{serviceType},
         #{serviceLevel},
         #{sliceType},
         #{orderTime},
