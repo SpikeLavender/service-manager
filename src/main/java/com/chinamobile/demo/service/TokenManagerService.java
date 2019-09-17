@@ -2,7 +2,9 @@ package com.chinamobile.demo.service;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.chinamobile.demo.entities.DemoException;
 import com.chinamobile.demo.entities.UserInfo;
+import com.chinamobile.demo.enums.RunStatusCodeEnum;
 import com.chinamobile.demo.mapper.UserInfoMapper;
 import com.chinamobile.demo.utils.TokenUtil;
 import io.jsonwebtoken.Claims;
@@ -62,7 +64,7 @@ public class TokenManagerService {
 		return tokenId;
 	}
 
-	public Long authorize(UserInfo user) {
+	public Long authorize(UserInfo user) throws DemoException{
 		//check if username and password is matched or if token has expired
 		//if has not expired token, return token
 		Map<String, Object> map = new HashMap<>();
@@ -72,10 +74,10 @@ public class TokenManagerService {
 		if (userInfo != null) {
 			return userInfo.getId();
 		}
-		return null;
+		throw new DemoException(RunStatusCodeEnum.LOGIN_FAIL);
 	}
 
-	public Long authorizeToken(String token, StringBuilder msg) throws Exception {
+	public Long authorizeToken(String token, StringBuilder msg) throws Exception{
 		//check if token has expired
 		//TODO: sql judge expired through expiredTime
 		Claims claims = TokenUtil.parseJWT(token, encryptKey);
@@ -85,11 +87,9 @@ public class TokenManagerService {
 			if (expireTime > System.currentTimeMillis()) {
 				return userId.longValue();
 			}
-			msg.append("Authorize fail, the token has expire, please login again");
-			return null;
+			throw new DemoException(RunStatusCodeEnum.TOKEN_EXPIRE);
 		}
-		msg.append("Authorize fail, the token is unvaild");
-		return null;
+		throw new DemoException(RunStatusCodeEnum.TOKEN_UNVAILD);
 	}
 
 	public boolean logout(String token) throws Exception {

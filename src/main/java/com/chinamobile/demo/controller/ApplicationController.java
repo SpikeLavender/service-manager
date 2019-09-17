@@ -1,21 +1,21 @@
 package com.chinamobile.demo.controller;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.chinamobile.demo.entities.OrderInfo;
-import com.chinamobile.demo.entities.Pagination;
-import com.chinamobile.demo.entities.ResponseEntity;
-import com.chinamobile.demo.entities.UserInfo;
+import com.chinamobile.demo.entities.*;
+import com.chinamobile.demo.enums.RunStatusCodeEnum;
 import com.chinamobile.demo.service.OrderManageService;
 import com.chinamobile.demo.service.TokenManagerService;
 import com.chinamobile.demo.utils.CommonUtil;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.Map;
 
 /**
  *
@@ -45,19 +45,20 @@ public class ApplicationController {
 		try {
 			logger.debug("Start login, use name is " + userInfo.getUsername());
 			Long id = tokenManagerService.authorize(userInfo);
-			if (id == null) {
-				logger.debug("login fail, user name or password error");
-				return new ResponseEntity<>("401", "Authorized Failed: user name or password error");
-			}
 			userInfo.setId(id);
 			String token = tokenManagerService.login(userInfo);
 			JSONObject resJson = new JSONObject();
 			resJson.put("token", token);
 			logger.debug("login success, the user name is " + userInfo.getUsername());
-			return new ResponseEntity<>("200", "get token success", resJson);
+			return new ResponseEntity<>(RunStatusCodeEnum.SUCCESS.getCode(),
+					"get token " + RunStatusCodeEnum.SUCCESS.getMsg(), resJson);
+
+		}catch (DemoException e) {
+			return new ResponseEntity<>(e.getCode(), e.getMessage());
 		} catch (Exception e) {
 			logger.error("login fail, the user name is " + userInfo.getUsername() + ", " + e.getMessage());
-			return new ResponseEntity<>("500", "Server Inter error: " + e.getMessage());
+			return new ResponseEntity<>(RunStatusCodeEnum.SYSTEM_ERROR.getCode(),
+					RunStatusCodeEnum.SYSTEM_ERROR.getMsg() + e.getMessage());
 		}
 	}
 
@@ -69,20 +70,49 @@ public class ApplicationController {
 			logger.debug("order5G start");
 			StringBuilder msg = new StringBuilder();
 			Long userId = tokenManagerService.authorizeToken(token, msg);
-			if (userId == null) {
-				logger.error("order5G fail, " + msg);
-				return new ResponseEntity<>("401", "Authorized Failed: " + msg.toString());
-			}
 			orderInfo.setUserId(userId);
 			Long orderId = orderManageService.createOrder(orderInfo);
 			JSONObject resJson = new JSONObject();
 			resJson.put("orderId", orderId);
 			resJson.put("fee", orderInfo.getFee());
+
 			logger.debug("order5G success, orderId is " + orderId);
-			return new ResponseEntity<>("200", "create order success", resJson);
+			return new ResponseEntity<>(RunStatusCodeEnum.SUCCESS.getCode(),
+					"create order " + RunStatusCodeEnum.SUCCESS.getMsg(), resJson);
+
+		}catch(DemoException e) {
+			return new ResponseEntity<>(e.getCode(), e.getMessage());
+
 		} catch (Exception e) {
 			logger.error("order5G fail, " + e.getMessage());
-			return new ResponseEntity<>("500", "Server Inter error: " + e.getMessage());
+			return new ResponseEntity<>(RunStatusCodeEnum.SYSTEM_ERROR.getCode(),
+					RunStatusCodeEnum.SYSTEM_ERROR.getMsg() + e.getMessage());
+		}
+	}
+
+	@CrossOrigin(origins = "*")
+	@PostMapping(value = "/5g-orders/{orderid}/active")
+	public ResponseEntity<JSONObject> active5G(@RequestBody ActiveInfo activeInfo,
+	                                           @RequestHeader String token,
+	                                           @PathVariable(value = "orderid", required = false) Long orderId) {
+		try {
+			logger.debug("active5G start");
+			StringBuilder msg = new StringBuilder();
+			tokenManagerService.authorizeToken(token, msg);
+			activeInfo.setOrderId(orderId);
+			Map<String, Object> resMap = orderManageService.activeOrder(activeInfo);
+
+			logger.debug("order5G success, orderId is " + orderId);
+			return new ResponseEntity<>(RunStatusCodeEnum.SUCCESS.getCode(),
+					"create active " + RunStatusCodeEnum.SUCCESS.getMsg(), (JSONObject) JSON.toJSON(resMap));
+
+		}catch (DemoException e) {
+			return new ResponseEntity<>(e.getCode(), e.getMsg());
+
+		} catch (Exception e) {
+			logger.error("order5G fail, " + e.getMessage());
+			return new ResponseEntity<>(RunStatusCodeEnum.SYSTEM_ERROR.getCode(),
+					RunStatusCodeEnum.SYSTEM_ERROR.getMsg() + e.getMessage());
 		}
 	}
 
@@ -109,10 +139,6 @@ public class ApplicationController {
 		try {
 			logger.debug("listOrder start");
 			Long userId = tokenManagerService.authorizeToken(token, msg);
-			if (userId == null) {
-				logger.error("listOrder fail, " + msg);
-				return new ResponseEntity<>("401", "Authorized Failed: " + msg.toString());
-			}
 
 			JSONObject queryJson = new JSONObject();
 			queryJson.put("serviceLevel", CommonUtil.isStrEmpty(level) || level.equals("ALL") ? null : level);
@@ -127,12 +153,14 @@ public class ApplicationController {
 			orders.setCurrentPage(page);
 			orders.setPageSize(size);
 			logger.debug("listOrder success, " + orders.toString());
-			return new ResponseEntity<>("200", "success", orders);
-
+			return new ResponseEntity<>(RunStatusCodeEnum.SUCCESS.getCode(),
+					RunStatusCodeEnum.SUCCESS.getMsg(), orders);
+		}catch (DemoException e) {
+			return new ResponseEntity<>(e.getCode(), e.getMsg());
 		} catch (Exception e) {
 			logger.error("listOrder fail, " + e.getMessage());
-			msg.append(e.getMessage());
-			return new ResponseEntity<>("500", "Server Inter error: " + msg);
+			return new ResponseEntity<>(RunStatusCodeEnum.SYSTEM_ERROR.getCode(),
+					RunStatusCodeEnum.SYSTEM_ERROR.getMsg() + e.getMessage());
 		}
 
 	}
@@ -146,7 +174,8 @@ public class ApplicationController {
 			return new ResponseEntity("204", "logout success");
 		} catch (Exception e) {
 			logger.error("logout fail, " + e.getMessage());
-			return new ResponseEntity("500", "Server Inter error");
+			return new ResponseEntity<>(RunStatusCodeEnum.SYSTEM_ERROR.getCode(),
+					RunStatusCodeEnum.SYSTEM_ERROR.getMsg() + e.getMessage());
 		}
 	}
 }

@@ -2,21 +2,24 @@ package com.chinamobile.demo.service;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.chinamobile.demo.entities.ActiveInfo;
 import com.chinamobile.demo.entities.CommonEnums.OrderStatusEnum;
+import com.chinamobile.demo.entities.CommonEnums.ActiveStatusEnum;
+import com.chinamobile.demo.entities.DemoException;
 import com.chinamobile.demo.entities.OrderInfo;
 import com.chinamobile.demo.entities.Pagination;
-import com.chinamobile.demo.entities.SystemException;
+import com.chinamobile.demo.enums.RunStatusCodeEnum;
+import com.chinamobile.demo.mapper.ActiveInfoMapper;
 import com.chinamobile.demo.mapper.OrderInfoMapper;
-import com.chinamobile.demo.utils.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;;
 
 /**
  *
@@ -29,20 +32,22 @@ public class OrderManageService {
 
 	@Autowired
 	OrderInfoMapper orderInfoMapper;
+	@Autowired
+	ActiveInfoMapper activeInfoMapper;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public Long createOrder(OrderInfo orderInfo) throws SystemException {
+	public Long createOrder(OrderInfo orderInfo) {
 		//TODO: calc the fee
 		orderInfo.setFee(calcFee(orderInfo));
-		orderInfo.setOrderStatus(OrderStatusEnum.WAITING);
-		ResponseEntity response = RestClient.sendBandWidthEvent(RestClient.ABNORMAL);
-		if(response.getStatusCodeValue() == HttpStatus.ACCEPTED.value() || Objects.equals(response.getBody(), "Accepted")){
-			orderInfo.setOrderStatus(OrderStatusEnum.READY);
-			//orderInfoMapper.createOrder(orderInfo);
-		} else {
-			orderInfo.setOrderStatus(OrderStatusEnum.CREATE_FAIL);
-		}
+		orderInfo.setOrderStatus(OrderStatusEnum.SUCCESS);
+//		ResponseEntity response = RestClient.sendBandWidthEvent(RestClient.ABNORMAL);
+//		if(response.getStatusCodeValue() == HttpStatus.ACCEPTED.value() || Objects.equals(response.getBody(), "Accepted")){
+//			orderInfo.setOrderStatus(OrderStatusEnum.READY);
+//			//orderInfoMapper.createOrder(orderInfo);
+//		} else {
+//			orderInfo.setOrderStatus(OrderStatusEnum.CREATE_FAIL);
+//		}
 		orderInfoMapper.createOrder(orderInfo);
 		return orderInfo.getId();
 	}
@@ -57,27 +62,6 @@ public class OrderManageService {
 				* orderInfo.getSliceType().getFee();
 	}
 
-//	public List<OrderInfo> getOrder(Integer userId, Integer page, Integer size,
-//	                                String status, String level, String type) {
-//		Map<String, Object> map = new HashMap<>();
-//		map.put("userId", userId);
-//		if (page != null && size != null) {
-//			map.put("startIndex", (page - 1) * size);
-//			map.put("pageSize", size);
-//		}
-//		if (CommonUtil.isStrNotEmpty(status)) {
-//			map.put("orderStatus", status);
-//		}
-//		if (CommonUtil.is(level)) {
-//			map.put("serviceLevel", level);
-//		}
-//		if (CommonUtil.isStrEmpty(type)) {
-//			map.put("sliceType", type);
-//		}
-//		List<OrderInfo> orders= orderInfoMapper.getOrderList(map);
-//		return orders;
-//	}
-
 	public Pagination getOrder(JSONObject queryJson) {
 		//JSONObject queryJson;
 		if (queryJson.containsKey("page") && queryJson.getIntValue("page") > 0
@@ -86,12 +70,37 @@ public class OrderManageService {
 					* queryJson.getIntValue("size"));
 			queryJson.put("pageSize", queryJson.getIntValue("size"));
 		}
-		List<OrderInfo> orders= orderInfoMapper.getOrderList(queryJson);
+		//List<OrderInfo> orders= orderInfoMapper.getOrderList(queryJson);
+		List<OrderInfo> orders= orderInfoMapper.getOrderListWithActive(queryJson);
 		Pagination pagination = new Pagination();
 		pagination.setOrderInfoList(orders);
 		Integer orderCount = orderInfoMapper.getOrderCount(queryJson.getInteger("userId"));
 		pagination.setTotal(orderCount);
 		logger.debug("get order list success: " + orders.toString());
 		return pagination;
+	}
+
+	public Map<String, Object> activeOrder(ActiveInfo activeInfo) throws DemoException{
+		Map<String, Object> resMap = new HashMap();
+		resMap.put("orderId", activeInfo.getOrderId());
+		Map<String, Object> map = new HashMap<>();
+		map.put("id", activeInfo.getOrderId());
+		List<OrderInfo> orderInfos = orderInfoMapper.getOrderList(map);
+		if (orderInfos == null || orderInfos.isEmpty()) {
+			throw new DemoException(RunStatusCodeEnum.ORDER_NOT_EXIST);
+		} else {
+			String orderTime = orderInfos.get(0).getOrderTime();
+			//todo: 判断是否在有效区间内
+			if (Long.parseLong(orderTime.split("\\|")[0]) > activeInfo.getStartTime().getTime()
+					|| Long.parseLong(orderTime.split("\\|")[1]) < activeInfo.getEndTime().getTime()) {
+				throw new DemoException(RunStatusCodeEnum.ACTIVE_TIME_UNVAILD);
+			} else {
+				activeInfoMapper.createActive(activeInfo);
+				resMap.put("id", activeInfo.getId());
+				resMap.put("activeStatus", ActiveStatusEnum.WAITING);
+				resMap.put("description", "create active event success");
+				return resMap;
+			}
+		}
 	}
 }

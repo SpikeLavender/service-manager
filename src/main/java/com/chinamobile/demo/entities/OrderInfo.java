@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -40,14 +41,11 @@ public class OrderInfo {
 	@ApiModelProperty(example = "1566460103997|1566462073997")
 	private String orderTime;
 
-	@ApiModelProperty(example = "1200")
-	private Long durationTime = null;
+	@ApiModelProperty(hidden = true)
+	private List<ActiveInfo> activeEvents;
 
 	@ApiModelProperty(example = "area1|area2|area3")
 	private String areaList;
-
-	@ApiModelProperty(example = "user1|user2|user3")
-	private String userList;
 
 	@ApiModelProperty(example = "app1|app2|app3")
 	private String appList;
@@ -113,29 +111,20 @@ public class OrderInfo {
 	}
 
 	public String getOrderTime() {
-		if (CommonUtil.isStrEmpty(orderTime)){
-			this.setOrderTime(orderTime);
-		}
 		return orderTime;
 	}
 
 	public void setOrderTime(String orderTime) {
 		//first judge order time
-		if (CommonUtil.isStrNotEmpty(orderTime)) {
-			this.orderTime = orderTime;
-		} else if (durationTime != null){
-			Long endTime = System.currentTimeMillis() + durationTime * 60 * 1000;
-			this.orderTime = System.currentTimeMillis() + "|" + endTime;
-		}
+		this.orderTime = orderTime;
 	}
 
-	public Long getDurationTime() {
-		return Long.parseLong(orderTime.split("\\|")[1])
-				- Long.parseLong(orderTime.split("\\|")[0]);
+	public List<ActiveInfo> getActiveEvents() {
+		return activeEvents;
 	}
 
-	public void setDurationTime(Long durationTime) {
-		this.durationTime = durationTime;
+	public void setActiveEvents(List<ActiveInfo> activeEvents) {
+		this.activeEvents = activeEvents;
 	}
 
 	public String getAreaList() {
@@ -144,14 +133,6 @@ public class OrderInfo {
 
 	public void setAreaList(String areaList) {
 		this.areaList = areaList;
-	}
-
-	public String getUserList() {
-		return userList;
-	}
-
-	public void setUserList(String userList) {
-		this.userList = userList;
 	}
 
 	public String getAppList() {

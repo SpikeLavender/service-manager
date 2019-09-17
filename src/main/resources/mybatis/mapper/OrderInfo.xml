@@ -4,18 +4,112 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chinamobile.demo.mapper.OrderInfoMapper">
 
+    <resultMap type="com.chinamobile.demo.entities.OrderInfo" id="baseResBean">
+
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="service_name" property="serviceName"/>
+        <result column="service_type" property="serviceType"/>
+        <result column="service_level" property="serviceLevel"/>
+        <result column="slice_type" property="sliceType"/>
+        <result column="order_time" property="orderTime"/>
+        <result column="area_list" property="areaList"/>
+        <result column="app_list" property="appList"/>
+
+        <collection
+                property="activeEvents"
+                columnPrefix="b_"
+                ofType="com.chinamobile.demo.entities.ActiveInfo">
+            <id column="id" property="id"/>
+            <result column="order_id" property="orderId"/>
+            <result column="start_time" property="startTime"/>
+            <result column="end_time" property="endTime"/>
+            <result column="active_status" property="activeStatus"/>
+
+        </collection>
+
+    </resultMap>
+
+
+    <select id="getOrderListWithActive" parameterType="com.chinamobile.demo.entities.OrderInfo" resultMap="baseResBean">
+    select
+        a.id as 'id',
+        a.user_id as 'userId',
+        a.service_name as 'serviceName',
+        a.service_type as 'serviceType',
+        a.service_level as 'serviceLevel',
+        a.slice_type as 'sliceType',
+        a.order_time as 'orderTime',
+        a.area_list as 'areaList',
+        a.app_list as 'appList',
+        b.order_id b_order_id,
+        b.start_time b_start_time,
+        b.end_time  b_end_time,
+        b.active_status b_active_status
+        from
+        order_info a
+        left join
+        active_info b
+        on
+        a.id = b.order_id
+        <where>
+            <if test= "id != null">
+                a.id=#{id}
+            </if>
+            <if test= "userId != null">
+                and a.user_id=#{userId}
+            </if>
+            <if test= "orderStatus != null and orderStatus != ''">
+                and a.order_status=#{orderStatus}
+            </if>
+            <if test= "sliceType != null and sliceType != ''">
+                and a.slice_type=#{sliceType}
+            </if>
+            <if test= "serviceLevel != null and serviceLevel != ''">
+                and a.service_level=#{serviceLevel}
+            </if>
+        </where>
+        <if test="pageSize != null">
+            <if test="startIndex != null">
+                limit #{startIndex},#{pageSize}
+            </if>
+            <if test="startIndex == null">
+                limit #{pageSize}
+            </if>
+            ;
+        </if>
+<!--        <where>-->
+<!--            a.delete_flag = ${@com.pisen.cloud.luna.ms.jifen.base.domain.IntegralGoods@DELETE_FLAG_DISDELETE}-->
+<!--            and a.tid = #{tid}-->
+
+<!--            <if test="uid != null and uid != '' ">-->
+<!--                and a.uid = #{uid}-->
+<!--            </if>-->
+
+<!--            <if test="brandUid != null and brandUid != '' ">-->
+<!--                and a.brand_uid = #{brandUid}-->
+<!--            </if>-->
+
+<!--            <if test="name != null and name != '' ">-->
+<!--                and a.name like CONCAT('%',#{name},'%')-->
+<!--            </if>-->
+
+<!--        </where>-->
+
+    </select>
+
     <insert id="createOrder" keyProperty="id" useGeneratedKeys="true">
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             select LAST_INSERT_ID()
         </selectKey>
         insert into order_info(user_id, service_name, service_type, service_level, slice_type, order_time,
-        area_list, user_list, app_list, order_status, fee)
+        area_list, app_list, order_status, fee)
         values(#{userId}, #{serviceName},
         #{serviceType},
         #{serviceLevel},
         #{sliceType},
         #{orderTime},
-        #{areaList}, #{userList}, #{appList}, #{orderStatus}, #{fee})
+        #{areaList}, #{appList}, #{orderStatus}, #{fee})
     </insert>
     <select id="getOrderList" resultType="com.chinamobile.demo.entities.OrderInfo">
         select * from order_info

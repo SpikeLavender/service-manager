@@ -65,12 +65,8 @@ public class CommonEnums {
 		}
 	}
 	public enum  OrderStatusEnum implements BaseEnum {
-		WAITING("waiting", 0),
-		READY("ready", 3),
-		RUNNING("running", 5),
-		STOPPING("stopping", 14),
-		STOPPED("stopped", 15),
-		CREATE_FAIL("create error", 16);
+		SUCCESS("success", 0),
+		ERROR("create error", 10);
 
 		private int code;
 		private String name;
@@ -92,6 +88,29 @@ public class CommonEnums {
 		private int code;
 
 		ServiceTypeEnum(int code) {
+			this.code = code;
+		}
+
+		@Override
+		public int getCode() {
+			return code;
+		}
+	}
+
+	public enum  ActiveStatusEnum implements BaseEnum {
+		WAITING("waiting", 0),
+		READY("ready", 3),
+		RUNNING("running", 5),
+		STOPPING("stopping", 14),
+		STOPPED("stopped", 15),
+		UNVAILD("unvaild time", 17),
+		ACTIVE_FAIL("create error", 20);
+
+		private int code;
+		private String name;
+
+		ActiveStatusEnum(String name, int code) {
+			this.name = name;
 			this.code = code;
 		}
 
