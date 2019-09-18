@@ -81,11 +81,20 @@ public class OrderActiveScheduler implements ApplicationRunner {
 		readyMap.put("stopActiveStatus", CommonEnums.ActiveStatusEnum.STOPPED);
 		List<Long> ids = activeInfoMapper.getRunningActive(readyMap);
 		for (int i = 0; i < ids.size(); i++) {
-			//todo:请求onap停止接口
 			readyMap.clear();
 			readyMap.put("id", ids.get(i));
-			readyMap.put("activeStatus", CommonEnums.ActiveStatusEnum.STOPPED);
-			activeInfoMapper.updateStatus(readyMap);
+			//todo:请求onap停止接口
+			try {
+				ResponseEntity response = RestClient.sendBandWidthEvent(RestClient.NORMAL);
+				if(response.getStatusCodeValue() == HttpStatus.ACCEPTED.value() || Objects.equals(response.getBody(), "Accepted")){
+					readyMap.put("activeStatus", CommonEnums.ActiveStatusEnum.STOPPED);
+					activeInfoMapper.updateStatus(readyMap);
+				} else {
+					//todo: 请求失败的话，是重试还是跳过？
+				}
+			} catch (SystemException e) {
+				//todo: 日志，重试机制
+			}
 		}
 	}
 }

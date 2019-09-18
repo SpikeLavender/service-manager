@@ -82,7 +82,7 @@ public class RestClient {
 
         Map<String, Object> commonEventHeaderMap = new HashMap<>();
         //必填
-        commonEventHeaderMap.put("sourceId", "5G-site-25");
+        commonEventHeaderMap.put("sourceId", "VDF-site-5GC05");
         commonEventHeaderMap.put("startEpochMicrosec", System.currentTimeMillis());
         //必填，must be changed for every event
         commonEventHeaderMap.put("eventId", UUID.randomUUID().toString().replace("-", "").toLowerCase());
