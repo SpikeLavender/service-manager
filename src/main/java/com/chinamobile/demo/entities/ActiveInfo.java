@@ -92,7 +92,7 @@ public class ActiveInfo {
 			if (CommonUtil.isStrNotEmpty(this.activeTime)) {
 				this.endTime = new Date(Long.parseLong(activeTime.split("\\|")[1]));
 			} else if (this.activeDuration != null) {
-				this.endTime = new Date(System.currentTimeMillis() + this.activeDuration);
+				this.endTime = new Date(System.currentTimeMillis() + this.activeDuration * 60 * 1000);
 			}
 		} else {
 			this.endTime = endTime;

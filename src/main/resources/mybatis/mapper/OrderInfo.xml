@@ -13,8 +13,10 @@
         <result column="service_level" property="serviceLevel"/>
         <result column="slice_type" property="sliceType"/>
         <result column="order_time" property="orderTime"/>
+        <result column="order_status" property="orderStatus"/>
         <result column="area_list" property="areaList"/>
         <result column="app_list" property="appList"/>
+        <result column="fee" property="fee"/>
 
         <collection
                 property="activeEvents"
@@ -32,70 +34,55 @@
 
 
     <select id="getOrderListWithActive" parameterType="com.chinamobile.demo.entities.OrderInfo" resultMap="baseResBean">
-    select
-        a.id as 'id',
-        a.user_id as 'userId',
-        a.service_name as 'serviceName',
-        a.service_type as 'serviceType',
-        a.service_level as 'serviceLevel',
-        a.slice_type as 'sliceType',
-        a.order_time as 'orderTime',
-        a.area_list as 'areaList',
-        a.app_list as 'appList',
-        b.order_id b_order_id,
-        b.start_time b_start_time,
-        b.end_time  b_end_time,
-        b.active_status b_active_status
+        select
+            c.*,
+            b.order_id b_order_id,
+            b.start_time b_start_time,
+            b.end_time  b_end_time,
+            b.active_status b_active_status
         from
-        order_info a
-        left join
-        active_info b
-        on
-        a.id = b.order_id
-        <where>
-            <if test= "id != null">
-                a.id=#{id}
+        (
+            select
+                a.id as 'id',
+                a.user_id as 'user_id',
+                a.service_name as 'service_name',
+                a.service_type as 'service_type',
+                a.service_level as 'service_level',
+                a.slice_type as 'slice_type',
+                a.order_time as 'order_time',
+                a.order_status as 'order_status',
+                a.area_list as 'area_list',
+                a.app_list as 'app_list',
+                a.fee as 'fee'
+            from
+                order_info a
+            <where>
+                <if test="id != null">
+                    a.id=#{id}
+                </if>
+                <if test="userId != null">
+                    and a.user_id=#{userId}
+                </if>
+                <if test="orderStatus != null and orderStatus != ''">
+                    and a.order_status=#{orderStatus}
+                </if>
+                <if test="sliceType != null and sliceType != ''">
+                    and a.slice_type=#{sliceType}
+                </if>
+                <if test="serviceLevel != null and serviceLevel != ''">
+                    and a.service_level=#{serviceLevel}
+                </if>
+            </where>
+            <if test="pageSize != null">
+                <if test="startIndex != null">
+                    limit #{startIndex},#{pageSize}
+                </if>
+                <if test="startIndex == null">
+                    limit #{pageSize}
+                </if>
             </if>
-            <if test= "userId != null">
-                and a.user_id=#{userId}
-            </if>
-            <if test= "orderStatus != null and orderStatus != ''">
-                and a.order_status=#{orderStatus}
-            </if>
-            <if test= "sliceType != null and sliceType != ''">
-                and a.slice_type=#{sliceType}
-            </if>
-            <if test= "serviceLevel != null and serviceLevel != ''">
-                and a.service_level=#{serviceLevel}
-            </if>
-        </where>
-        <if test="pageSize != null">
-            <if test="startIndex != null">
-                limit #{startIndex},#{pageSize}
-            </if>
-            <if test="startIndex == null">
-                limit #{pageSize}
-            </if>
-            ;
-        </if>
-<!--        <where>-->
-<!--            a.delete_flag = ${@com.pisen.cloud.luna.ms.jifen.base.domain.IntegralGoods@DELETE_FLAG_DISDELETE}-->
-<!--            and a.tid = #{tid}-->
-
-<!--            <if test="uid != null and uid != '' ">-->
-<!--                and a.uid = #{uid}-->
-<!--            </if>-->
-
-<!--            <if test="brandUid != null and brandUid != '' ">-->
-<!--                and a.brand_uid = #{brandUid}-->
-<!--            </if>-->
-
-<!--            <if test="name != null and name != '' ">-->
-<!--                and a.name like CONCAT('%',#{name},'%')-->
-<!--            </if>-->
-
-<!--        </where>-->
-
+        )c
+        left join active_info b on c.id = b.order_id
     </select>
 
     <insert id="createOrder" keyProperty="id" useGeneratedKeys="true">
